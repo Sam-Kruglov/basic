@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    # IDEA cannot connect to an in-memory db, so we store it in a file
+    # also, cannot use relative path due to https://youtrack.jetbrains.com/issue/IDEA-252118
+    url: jdbc:h2:file:~/db;AUTO_SERVER=TRUE

@@ -1,1 +1,4 @@
+spring:
+  application.name: soccer-player-market
+  jpa.open-in-view: false
 

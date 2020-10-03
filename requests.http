@@ -1,0 +1,13 @@
+###
+GET http://localhost:8080/api/users/me
+Authorization: Basic admin admin
+
+### create user
+POST http://localhost:8080/api/users
+Authorization: Basic admin admin
+Content-Type: application/json
+
+{
+  "username": "bob",
+  "password": "bob"
+}
