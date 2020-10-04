@@ -1,0 +1,10 @@
+create sequence user_seq start with 1 increment by 1;
+create table roles (id integer not null, name varchar(255), primary key (id));
+create table users (id bigint not null, email varchar_ignorecase(70) not null, encoded_password varchar_ignorecase(500) not null, primary key (id));
+create table users_to_roles (user_id bigint not null, role_id integer not null);
+create index ID_roles_name on roles (name);
+alter table roles add constraint UK_roles_name unique (name);
+alter table users add constraint UK_users_email unique (email);
+create index ID_users_to_roles_user_id on users_to_roles (user_id);
+alter table users_to_roles add constraint FK_users_to_roles_role_id foreign key (role_id) references roles;
+alter table users_to_roles add constraint FK_users_to_roles_user_id foreign key (user_id) references users;

@@ -1,4 +1,18 @@
 spring:
   application.name: soccer-player-market
-  jpa.open-in-view: false
+  flyway.baseline-version: 0.1.0
+  jpa:
+    open-in-view: false
+    hibernate.ddl-auto: validate
+    properties:
+      #only entities with @Cacheable annotation will use cache.
+      javax.persistence.sharedCache.mode: ENABLE_SELECTIVE
+      hibernate:
+        javax.cache:
+          missing_cache_strategy: create
+          uri: classpath:ehcache.xml
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
 
+jwt.valid-for: 1m

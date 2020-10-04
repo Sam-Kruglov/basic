@@ -1,13 +1,27 @@
-###
-GET http://localhost:8080/api/users/me
-Authorization: Basic admin admin
-
-### create user
-POST http://localhost:8080/api/users
-Authorization: Basic admin admin
+# Authenticate and save the token
+POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "username": "bob",
+  "email": "admin@company.com",
+  "password": "adminpass"
+}
+
+> {% client.global.set("auth_token", response.body.jwt); %}
+
+###
+GET http://localhost:8080/api/users/self
+Authorization: Bearer {{auth_token}}
+
+###
+DELETE http://localhost:8080/api/users/self
+Authorization: Bearer {{auth_token}}
+
+### create user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "bob",
   "password": "bob"
 }
