@@ -70,7 +70,6 @@ public class SecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.setSharedObject(SessionCreationPolicy.class, SessionCreationPolicy.STATELESS);
             /* see default behaviour in JwtGrantedAuthoritiesConverter:
              * It expects a role without any prefix inside the incoming JWT.
              * OAuth2 terminology uses "SCOPE_" prefix by default, so inside GrantedAuthority it will have it
@@ -90,6 +89,9 @@ public class SecurityConfig {
             http
                     // JWT based authentication does not use cookies hence CSRF is impossible
                     .csrf().disable()
+                    .sessionManagement()
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .and()
                     .authorizeRequests()
                         .antMatchers("/api/login")
                             .permitAll()
