@@ -3,6 +3,7 @@
     <module name="soccer-player-market" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.toptal.screening.soccerplayermarket.SoccerPlayerMarketApplication" />
     <option name="ACTIVE_PROFILES" value="dev" />
+    <option name="VM_PARAMETERS" value="--add-modules java.se --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />

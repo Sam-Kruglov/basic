@@ -1,6 +1,7 @@
 spring:
   application.name: soccer-player-market
   flyway.baseline-version: 0.1.0
+  hazelcast.config: classpath:hazelcast.xml
   jpa:
     open-in-view: false
     hibernate.ddl-auto: validate
@@ -8,11 +9,11 @@ spring:
       #only entities with @Cacheable annotation will use cache.
       javax.persistence.sharedCache.mode: ENABLE_SELECTIVE
       hibernate:
-        javax.cache:
-          missing_cache_strategy: create
-          uri: classpath:ehcache.xml
         cache:
           use_second_level_cache: true
+          # only queries containing hibernate hint will be cached
           use_query_cache: true
+          hazelcast.configuration_file_path: ${spring.hazelcast.config}
+          region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
 
 jwt.valid-for: 1m

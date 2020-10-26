@@ -28,6 +28,22 @@ public class Identifiable {
     protected Long id;
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Identifiable that = (Identifiable) o;
+        if (id != null && that.id != null) {
+            return id.equals(that.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
     public String toString() {
         return "{id=" + id + '}';
     }

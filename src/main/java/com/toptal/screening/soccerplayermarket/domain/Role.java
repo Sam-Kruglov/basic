@@ -10,23 +10,27 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
-@ToString(callSuper = true)
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor
 @Getter
-@Table(name = "roles", indexes = @Index(columnList = "name"))
+@Table(name = Role.TABLE_NAME)
 @Immutable
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(region = Role.TABLE_NAME, usage = CacheConcurrencyStrategy.READ_ONLY)
+@NaturalIdCache
 public class Role {
+
+    public static final String TABLE_NAME = "roles";
 
     @Id
     @NonNull
@@ -35,4 +39,17 @@ public class Role {
     @NonNull
     @NaturalId
     private String name;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return id.equals(role.id) || name.equals(role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }

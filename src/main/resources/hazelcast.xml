@@ -1,0 +1,22 @@
+<hazelcast xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config
+           http://www.hazelcast.com/schema/config/hazelcast-config-3.12.xsd">
+
+    <!-- quick reference
+    https://github.com/hazelcast/hazelcast/blob/3.12.z/hazelcast/src/main/resources/hazelcast-full-example.xml -->
+
+
+    <!-- Wildcard applied to any cache -->
+    <map name="*">
+        <max-size policy="PER_NODE">100</max-size>
+        <time-to-live-seconds>300</time-to-live-seconds>
+    </map>
+
+    <!-- Role is immutable -->
+    <map name="com.toptal.screening.soccerplayermarket.domain.Role">
+        <max-size>0</max-size>
+        <time-to-live-seconds>0</time-to-live-seconds>
+    </map>
+
+</hazelcast>

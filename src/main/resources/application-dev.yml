@@ -20,3 +20,4 @@ logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type.descriptor: trace
   org.hibernate.tool.hbm2ddl: debug
+  org.hibernate.cache: debug
