@@ -7,7 +7,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.toptal.screening.soccerplayermarket.config.SecurityConfig;
 import com.toptal.screening.soccerplayermarket.domain.Role;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -28,16 +27,25 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JWSSigner jwsSigner;
-    private final OAuth2ResourceServerProperties properties;
+    private final JWSAlgorithm jwsAlgorithm;
 
     @Value("${jwt.valid-for}")
     @Setter
     private Duration validFor;
+
+    public AuthController(
+            AuthenticationManager authenticationManager,
+            JWSSigner jwsSigner,
+            OAuth2ResourceServerProperties properties
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.jwsSigner = jwsSigner;
+        this.jwsAlgorithm = JWSAlgorithm.parse(properties.getJwt().getJwsAlgorithm());
+    }
 
     @SneakyThrows
     @PostMapping("/login")
@@ -46,7 +54,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword())
         ).getPrincipal()).getDelegate();
         val jwt = new SignedJWT(
-                new JWSHeader.Builder(JWSAlgorithm.parse(properties.getJwt().getJwsAlgorithm())).build(),
+                new JWSHeader.Builder(jwsAlgorithm).build(),
                 new JWTClaimsSet.Builder()
                         .subject(user.getEmail())
                         .issueTime(Date.from(Instant.now()))

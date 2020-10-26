@@ -30,6 +30,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -74,12 +75,12 @@ public class SecurityConfig {
              * It expects a role without any prefix inside the incoming JWT.
              * OAuth2 terminology uses "SCOPE_" prefix by default, so inside GrantedAuthority it will have it
              * instead of "ROLE_" that we're using here. But it is configurable.
-             * I could just configure that prefix and it would work but then if a user is deleted,
-             * token revocation needs to be implemented.
-             * This way I will query the database every time, so if the user no longer exists but the token
+             * We could just configure that prefix and it would work but we can't rely on JWT yet.
+             * If a user is deleted, token revocation needs to be implemented.
+             * This way we will query the database every time, so if the user no longer exists but the token
              * is still valid the request will be properly rejected.
-             * I added cache to user repository but when the project will scale, JWT revocation should be in place
-             * so that we can use the JWT itself for the Authentication principal and not go the database for the User.
+             * There is a user cache but when the project will scale, JWT revocation should be in place so that we can
+             * use the JWT itself for the Authentication principal and not go the database for the User every time.
              */
             Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter = jwt -> {
                 val userDetails = userDetailsService.loadUserByUsername(jwt.getSubject());
@@ -134,6 +135,7 @@ public class SecurityConfig {
      * Recommendation taken from Spring docs.
      */
     @Bean
+    @Profile("!dev")
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
@@ -168,6 +170,14 @@ public class SecurityConfig {
                         List.of(roleRepo.findByName(ROLE_USER), roleRepo.findByName(ROLE_ADMIN))
                 ));
             }
+        }
+
+        @Bean
+        @Profile("dev")
+        // it's not actually deprecated, just an indication to not use in production
+        @SuppressWarnings("deprecation")
+        public PasswordEncoder passwordEncoder() {
+            return NoOpPasswordEncoder.getInstance();
         }
 
         /**
@@ -207,6 +217,8 @@ public class SecurityConfig {
     }
 
     /**
+     * Add {@link UserDetails} into it.
+     * <p>
      * see {@link JwtAuthenticationToken}
      */
     public static class UserDetailsJwtAuthenticationToken extends AbstractOAuth2TokenAuthenticationToken<Jwt> {
