@@ -66,6 +66,7 @@ public class SecurityConfig {
     @RequiredArgsConstructor
     public static class ApiConfig extends WebSecurityConfigurerAdapter {
         private final UserDetailsService userDetailsService;
+        private final PasswordEncoder passwordEncoder;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -116,6 +117,7 @@ public class SecurityConfig {
             //for username/password authentication inside /api/login
             val daoAuthenticationProvider = new DaoAuthenticationProvider();
             daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+            daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
             auth.authenticationProvider(daoAuthenticationProvider);
         }
 
