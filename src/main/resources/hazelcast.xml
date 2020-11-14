@@ -16,7 +16,7 @@
     </map>
 
     <!-- Role is immutable -->
-    <map name="com.toptal.screening.soccerplayermarket.domain.Role">
+    <map name="roles">
         <eviction max-size-policy="PER_NODE" size="0"/>
         <time-to-live-seconds>0</time-to-live-seconds>
     </map>
