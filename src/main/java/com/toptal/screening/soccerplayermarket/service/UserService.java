@@ -1,7 +1,7 @@
 package com.toptal.screening.soccerplayermarket.service;
 
 import com.toptal.screening.soccerplayermarket.api.view.UserDto;
-import com.toptal.screening.soccerplayermarket.config.SecurityConfig;
+import com.toptal.screening.soccerplayermarket.config.Roles;
 import com.toptal.screening.soccerplayermarket.domain.User;
 import com.toptal.screening.soccerplayermarket.repo.RoleRepo;
 import com.toptal.screening.soccerplayermarket.repo.UserRepo;
@@ -12,7 +12,6 @@ import lombok.val;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class UserService {
         if (repo.existsByEmail(dto.getEmail())) {
             throw new SoccerMarketException(EMAIL_ALREADY_EXISTS);
         }
-        val userRole = roleRepo.findByName(SecurityConfig.ROLE_USER);
+        val userRole = roleRepo.findByName(Roles.USER);
         repo.save(new User(dto.getEmail(), passwordEncoder.encode(dto.getPassword()), List.of(userRole)));
     }
 
@@ -44,8 +43,11 @@ public class UserService {
         return repo.findByEmail(email).orElseThrow(() -> new SoccerMarketException(USER_NOT_FOUND));
     }
 
-    @Transactional
     public void deleteByEmail(String email) {
-        repo.delete(getByEmail(email));
+        delete(getByEmail(email));
+    }
+
+    public void delete(User user) {
+        repo.delete(user);
     }
 }

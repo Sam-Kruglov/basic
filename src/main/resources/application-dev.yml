@@ -4,6 +4,8 @@ spring:
     # IDEA cannot connect to an in-memory db, so we store it in a file
     # also, cannot use relative path due to https://youtrack.jetbrains.com/issue/IDEA-252118
     url: jdbc:h2:file:~/db;AUTO_SERVER=TRUE
+    username: 'sa'
+    password: ''
   security:
     # we aren't using OAuth2 nor any resource server
     # but we're reusing the existing Spring code for just the JWT support

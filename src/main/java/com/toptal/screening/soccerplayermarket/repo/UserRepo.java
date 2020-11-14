@@ -12,6 +12,8 @@ public interface UserRepo {
 
     boolean existsByEmail(String email);
 
+    boolean hasRole(String email, String role);
+
     void save(User user);
 
     void delete(User user);

@@ -1,6 +1,7 @@
 package com.toptal.screening.soccerplayermarket.api;
 
 import com.toptal.screening.soccerplayermarket.api.view.UserDto;
+import com.toptal.screening.soccerplayermarket.domain.User;
 import com.toptal.screening.soccerplayermarket.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,8 +43,8 @@ public class UserController {
     }
 
     @DeleteMapping("/self")
-    public String removeMe(@AuthenticationPrincipal(expression = "delegate.email") String email) {
-        userService.deleteByEmail(email);
+    public String removeMe(@AuthenticationPrincipal(expression = "delegate") User user) {
+        userService.delete(user);
         return "removed";
     }
 }

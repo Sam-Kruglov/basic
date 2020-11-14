@@ -17,11 +17,9 @@ public class Identifiable {
 
     @Id
     @GenericGenerator(
-            name = Identifiable.SEQUENCE_PER_ENTITY_GENERATOR,
+            name = SEQUENCE_PER_ENTITY_GENERATOR,
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = SequenceStyleGenerator.CONFIG_PREFER_SEQUENCE_PER_ENTITY, value = "true")
-            }
+            parameters = @Parameter(name = SequenceStyleGenerator.CONFIG_PREFER_SEQUENCE_PER_ENTITY, value = "true")
     )
     @GeneratedValue(generator = SEQUENCE_PER_ENTITY_GENERATOR, strategy = GenerationType.SEQUENCE)
     @Getter

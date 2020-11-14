@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -32,8 +34,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
-import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
@@ -43,19 +43,17 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 import java.security.interfaces.RSAPrivateKey;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.toptal.screening.soccerplayermarket.config.Roles.ADMIN;
+import static com.toptal.screening.soccerplayermarket.config.Roles.USER;
 import static java.util.stream.Collectors.toList;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    public static final String ROLE_USER = "USER";
-    public static final String ROLE_ADMIN = "ADMIN";
 
     //todo there isn't any Spring native JWT generation yet
     // but watch out for https://github.com/spring-projects-experimental/spring-authorization-server
@@ -99,13 +97,13 @@ public class SecurityConfig {
                         // there's no need for the already logged in users to create more users
                         // fixme attacker may infinitely create users. Rate limiting required
                         .antMatchers(HttpMethod.POST, "/api/users")
-                            .access("not authenticated or hasRole('" + ROLE_ADMIN + "')")
+                            .access("not authenticated or hasRole(@roles.ADMIN)")
                         //admin users can only be removed manually directly from the database
-                        .antMatchers(HttpMethod.DELETE, "/api/users/self").not().hasRole(ROLE_ADMIN)
+                        .antMatchers(HttpMethod.DELETE, "/api/users/self").not().hasRole(ADMIN)
                         .antMatchers(HttpMethod.DELETE, "/api/users/{email}")
-                            .access("hasRole('" + ROLE_ADMIN + "') and not @userRepo.findByEmail(#email).orElse(false).hasRole(" + ROLE_ADMIN + ")")
-                        .antMatchers("/api/**/self/**").hasRole(ROLE_USER)
-                        .antMatchers("/**").hasRole(ROLE_ADMIN)
+                            .access("hasRole(@roles.ADMIN) and not @userRepo.hasRole(#email, @roles.ADMIN)")
+                        .antMatchers("/api/**/self/**").hasRole(USER)
+                        .antMatchers("/**").hasRole(ADMIN)
                         .and()
                     .oauth2ResourceServer()
                         .jwt()
@@ -141,6 +139,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public UserDetailsService userDetailsService(UserRepo repo) {
         return username -> repo.findByEmail(username)
                                .map(CustomUser::new)
@@ -160,20 +159,25 @@ public class SecurityConfig {
          * passwords can be encoded using the Spring CLI
          * https://docs.spring.io/spring-security/site/docs/current/reference/html5/#authentication-password-storage-boot-cli
          */
-        @Autowired
-        public void createDefaultAdmin(UserRepo userRepo, PasswordEncoder passwordEncoder, RoleRepo roleRepo) {
-            val username = "admin@company.com";
-            if (!userRepo.existsByEmail(username)) {
-                userRepo.save(new User(
-                        username,
-                        passwordEncoder.encode("adminpass"),
-                        List.of(roleRepo.findByName(ROLE_USER), roleRepo.findByName(ROLE_ADMIN))
-                ));
-            }
+        @Bean
+        public ApplicationListener<ApplicationReadyEvent> createDefaultAdmin(
+                UserRepo userRepo,
+                PasswordEncoder passwordEncoder,
+                RoleRepo roleRepo
+        ) {
+            return event -> {
+                val username = "admin@company.com";
+                if (!userRepo.existsByEmail(username)) {
+                    userRepo.save(new User(
+                            username,
+                            passwordEncoder.encode("adminpass"),
+                            List.of(roleRepo.findByName(USER), roleRepo.findByName(ADMIN))
+                    ));
+                }
+            };
         }
 
         @Bean
-        @Profile("dev")
         // it's not actually deprecated, just an indication to not use in production
         @SuppressWarnings("deprecation")
         public PasswordEncoder passwordEncoder() {
@@ -189,9 +193,7 @@ public class SecurityConfig {
         @Autowired
         @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
         public void removeJwtValidatorClockSkew(JwtDecoder jwtDecoder) {
-            List<OAuth2TokenValidator<Jwt>> validators = new ArrayList<>();
-            validators.add(new JwtTimestampValidator(Duration.ZERO));
-            ((NimbusJwtDecoder) jwtDecoder).setJwtValidator(new DelegatingOAuth2TokenValidator<>(validators));
+            ((NimbusJwtDecoder) jwtDecoder).setJwtValidator(new JwtTimestampValidator(Duration.ZERO));
         }
     }
 
@@ -217,7 +219,7 @@ public class SecurityConfig {
     }
 
     /**
-     * Add {@link UserDetails} into it.
+     * Adds {@link UserDetails} into the token.
      * <p>
      * see {@link JwtAuthenticationToken}
      */

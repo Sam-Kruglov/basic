@@ -3,6 +3,7 @@ package com.toptal.screening.soccerplayermarket.repo.impl;
 import com.toptal.screening.soccerplayermarket.domain.User;
 import com.toptal.screening.soccerplayermarket.repo.UserRepo;
 import com.toptal.screening.soccerplayermarket.repo.config.HibernateRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Optional;
 
-@Repository
+@Repository("userRepo")
 public interface JpaUserRepo extends UserRepo, HibernateRepository<User, Long> {
 
     @Cached
@@ -27,6 +28,13 @@ public interface JpaUserRepo extends UserRepo, HibernateRepository<User, Long> {
 
     @Override
     boolean existsByEmail(String email);
+
+    @Query(value = "select count(u.id) > 0 from users u " +
+            "join users_to_roles utr on u.id = utr.user_id " +
+            "join roles r on utr.role_id = r.id and r.name = :role " +
+            "where u.email = :email", nativeQuery = true)
+    @Override
+    boolean hasRole(String email, String role);
 
     @QueryHints({
             @QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"),
