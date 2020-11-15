@@ -2,6 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+dev-db.*.db
 
 ### STS ###
 .apt_generated
@@ -16,6 +17,7 @@ target/
 .idea/*
 !.idea/codeStyles
 !.idea/runConfigurations
+!.idea/dataSources.xml
 *.iws
 *.iml
 *.ipr
