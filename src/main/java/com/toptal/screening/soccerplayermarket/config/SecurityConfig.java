@@ -93,7 +93,10 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .and()
                     .authorizeRequests()
-                        .antMatchers("/api/login")
+                        // /open-api doesn't exist in production
+                        .antMatchers("/open-api/**")
+                            .permitAll()
+                        .antMatchers("/api/auth/login")
                             .permitAll()
                         // there's no need for the already logged in users to create more users
                         // fixme attacker may infinitely create users. Rate limiting required

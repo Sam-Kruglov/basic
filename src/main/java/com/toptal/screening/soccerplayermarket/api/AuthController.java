@@ -5,8 +5,10 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.toptal.screening.soccerplayermarket.api.config.OpenApiConfig;
 import com.toptal.screening.soccerplayermarket.config.SecurityConfig;
 import com.toptal.screening.soccerplayermarket.domain.Role;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.val;
@@ -26,7 +28,8 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
+@Tag(name = "auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -47,6 +50,7 @@ public class AuthController {
         this.jwsAlgorithm = JWSAlgorithm.parse(properties.getJwt().getJwsAlgorithm());
     }
 
+    @Tag(name = OpenApiConfig.INSECURE_TAG)
     @SneakyThrows
     @PostMapping("/login")
     public JwtDto login(@RequestBody CredentialsDto credentials) {

@@ -13,6 +13,8 @@ jwt:
   private-key: classpath:dev/rsa_private.pem
   valid-for: 1h
 
+springdoc.api-docs.enabled: true
+
 logging.level:
   root: info
   com.toptal.screening.soccerplayermarket: trace

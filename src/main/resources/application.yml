@@ -17,3 +17,13 @@ spring:
           region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
 
 jwt.valid-for: 1m
+
+springdoc:
+  api-docs:
+    enabled: false
+    path: /open-api/v3/api-docs
+  swagger-ui:
+    path: /open-api/swagger-ui.html
+  paths-to-match: /api/**
+  # ErrorResponse gets removed with this enabled
+  remove-broken-reference-definitions: false
