@@ -1,6 +1,7 @@
 package com.toptal.screening.soccerplayermarket.api;
 
-import com.toptal.screening.soccerplayermarket.api.view.UserDto;
+import com.toptal.screening.soccerplayermarket.api.view.CreateUserDto;
+import com.toptal.screening.soccerplayermarket.api.view.GetUserDto;
 import com.toptal.screening.soccerplayermarket.domain.User;
 import com.toptal.screening.soccerplayermarket.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,30 +28,27 @@ public class UserController {
 
     @Operation(operationId = CREATE_USER_OP_ID)
     @PostMapping
-    public void createUser(@RequestBody UserDto userDto) {
+    public void createUser(@RequestBody CreateUserDto userDto) {
         userService.create(userDto);
     }
 
     @GetMapping("/self")
-    public String getMe(@AuthenticationPrincipal(expression = "delegate.email") String email) {
-        return "you are " + email;
+    public GetUserDto getMe(@AuthenticationPrincipal(expression = "delegate") User user) {
+        return new GetUserDto(user.getEmail());
     }
 
     @GetMapping("/{email}")
-    public String getUser(@PathVariable String email) {
-        userService.getByEmail(email);
-        return "found";
+    public GetUserDto getUser(@PathVariable String email) {
+        return new GetUserDto(userService.getByEmail(email).getEmail());
     }
 
     @DeleteMapping("/{email}")
-    public String removeUser(@PathVariable String email) {
+    public void removeUser(@PathVariable String email) {
         userService.deleteByEmail(email);
-        return "removed";
     }
 
     @DeleteMapping("/self")
-    public String removeMe(@AuthenticationPrincipal(expression = "delegate") User user) {
+    public void removeMe(@AuthenticationPrincipal(expression = "delegate") User user) {
         userService.delete(user);
-        return "removed";
     }
 }

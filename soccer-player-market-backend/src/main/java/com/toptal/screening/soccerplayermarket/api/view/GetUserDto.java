@@ -3,7 +3,6 @@ package com.toptal.screening.soccerplayermarket.api.view;
 import lombok.Value;
 
 @Value
-public class UserDto {
+public class GetUserDto {
     String email;
-    String password;
 }
