@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 
-@Profile("dev")
+@Profile("!prod & !test")
 @Configuration
 public class OpenApiConfig {
     public static final String INSECURE_TAG = "insecure";

@@ -1,4 +1,5 @@
 spring:
+  profiles.active: prod
   application.name: soccer-player-market
   flyway.baseline-version: 0.1.0
   hazelcast.config: classpath:hazelcast.xml

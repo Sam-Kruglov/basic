@@ -138,7 +138,7 @@ public class SecurityConfig {
      * Recommendation taken from Spring docs.
      */
     @Bean
-    @Profile("!dev")
+    @Profile("prod")
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
@@ -181,6 +181,11 @@ public class SecurityConfig {
                 }
             };
         }
+    }
+
+    @Configuration
+    @Profile("dev | test")
+    public static class LocalConfig {
 
         @Bean
         // it's not actually deprecated, just an indication to not use in production

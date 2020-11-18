@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
  * Proxies a {@link DataSource} to log the SQL.
  */
 //src https://github.com/ttddyy/datasource-proxy-examples/blob/master/springboot-autoconfig-example/src/main/java/net/ttddyy/dsproxy/example/DatasourceProxyBeanPostProcessor.java
-@Profile("dev")
+@Profile("!prod")
 @Component
 public class DatasourceProxyBeanPostProcessor implements BeanPostProcessor {
 
