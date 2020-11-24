@@ -1,0 +1,16 @@
+# OpenAPI Generator Ignore
+# Use this file to prevent files from being overwritten by the generator.
+# The patterns follow closely to .gitignore or .dockerignore.
+
+**/ServerConfiguration.java
+**/ServerVariable.java
+**/ParamExpander.java
+**/EncodingUtils.java
+src/test/**
+**/AndroidManifest.xml
+.gitignore
+.travis.yml
+git_push.sh
+build.sbt
+gradle/
+*gradle*

@@ -1,0 +1,367 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:8080
+security:
+- jwt: []
+paths:
+  /api/users:
+    post:
+      operationId: create-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: {}
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
+      security:
+      - jwt: []
+      - {}
+      tags:
+      - users
+      x-contentType: application/json
+      x-accepts: application/json
+  /api/auth/login:
+    post:
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialsDto'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/JwtDto'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: {}
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
+      security: []
+      tags:
+      - auth
+      x-contentType: application/json
+      x-accepts: application/json
+  /api/users/{email}:
+    delete:
+      operationId: removeUser
+      parameters:
+      - explode: false
+        in: path
+        name: email
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: {}
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
+      tags:
+      - users
+      x-accepts: application/json
+    get:
+      operationId: getUser
+      parameters:
+      - explode: false
+        in: path
+        name: email
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GetUserDto'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: {}
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
+      tags:
+      - users
+      x-accepts: application/json
+  /api/users/self:
+    delete:
+      operationId: removeMe
+      responses:
+        "200":
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: {}
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
+      tags:
+      - users
+      x-accepts: application/json
+    get:
+      operationId: getMe
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GetUserDto'
+          description: OK
+        "401":
+          content: {}
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: {}
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
+      tags:
+      - users
+      x-accepts: application/json
+components:
+  responses:
+    "401":
+      content: {}
+      description: Unauthorized
+      headers:
+        WWW-Authenticate:
+          description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+          explode: false
+          schema:
+            type: string
+          style: simple
+    "403":
+      content: {}
+      description: Forbidden
+      headers:
+        WWW-Authenticate:
+          description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+          explode: false
+          schema:
+            type: string
+          style: simple
+    default:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: other error responses
+  schemas:
+    ErrorResponse:
+      description: |+
+        * 400:
+
+          * 2 - Email already exists
+
+        * 404:
+
+          * 1 - User not found
+
+        * 500:
+
+          * 0 - Internal error
+
+      properties:
+        code:
+          enum:
+          - 0
+          - 1
+          - 2
+          format: int32
+          type: integer
+          x-enum-varnames:
+          - INTERNAL_ERROR
+          - USER_NOT_FOUND
+          - EMAIL_ALREADY_EXISTS
+          x-enum-descriptions:
+          - Internal error
+          - User not found
+          - Email already exists
+        message:
+          type: string
+      type: object
+    CreateUserDto:
+      example:
+        password: password
+        email: email
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      type: object
+    CredentialsDto:
+      example:
+        password: password
+        email: email
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      type: object
+    JwtDto:
+      example:
+        jwt: jwt
+      properties:
+        jwt:
+          type: string
+      type: object
+    GetUserDto:
+      example:
+        email: email
+      properties:
+        email:
+          type: string
+      type: object
+  securitySchemes:
+    jwt:
+      bearerFormat: JWT
+      description: Authenticate via `/api/auth/login`
+      scheme: bearer
+      type: http
+

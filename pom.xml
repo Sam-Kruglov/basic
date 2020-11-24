@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>soccer-player-market-client</module>
         <module>soccer-player-market-backend</module>
     </modules>
 

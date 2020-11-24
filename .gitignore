@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 dev-db.*.db
+google-java-format-*.jar
 
 ### STS ###
 .apt_generated
