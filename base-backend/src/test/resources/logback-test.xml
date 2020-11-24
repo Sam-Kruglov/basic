@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Reference https://logback.qos.ch/manual/configuration.html
+    This XML will always be picked up even if we don't have Spring context running, which will happen in tests.
+-->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <logger name="com.samkruglov.base" level="trace"/>
+    <logger name="feign.Logger" level="debug"/>
+    <logger name="org.springframework.security.web.access.ExceptionTranslationFilter" level="debug"/>
+    <logger name="org.hibernate.cache" level="debug"/>
+</configuration>

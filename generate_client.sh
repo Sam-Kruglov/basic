@@ -1,7 +1,7 @@
-groupId=com.toptal.screening
-artifactId=soccer-player-market-client
+groupId=com.samkruglov
+artifactId=base-client
 version=0.1.0
-package=$groupId.soccerplayermarket.client.gen
+package=$groupId.base.client.gen
 
 # let it re-generate all the markdown files. By default it will not replace existing ones
 rm -rf $artifactId/**/*.md

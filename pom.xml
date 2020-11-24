@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.toptal.screening</groupId>
-    <artifactId>soccer-player-market</artifactId>
+    <groupId>com.samkruglov</groupId>
+    <artifactId>base</artifactId>
     <version>x.x.x</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>soccer-player-market-client</module>
-        <module>soccer-player-market-backend</module>
+        <module>base-client</module>
+        <module>base-backend</module>
     </modules>
 
 </project>
