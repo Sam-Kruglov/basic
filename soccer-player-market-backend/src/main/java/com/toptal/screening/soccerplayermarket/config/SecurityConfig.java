@@ -55,8 +55,6 @@ import static java.util.stream.Collectors.toList;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    //todo there isn't any Spring native JWT generation yet
-    // but watch out for https://github.com/spring-projects-experimental/spring-authorization-server
     @Bean
     public JWSSigner jwsSigner(@Value("${jwt.private-key}") RSAPrivateKey privateKey) {
         return new RSASSASigner(privateKey);
@@ -76,10 +74,11 @@ public class SecurityConfig {
              * instead of "ROLE_" that we're using here. But it is configurable.
              * We could just configure that prefix and it would work but we can't rely on JWT yet.
              * If a user is deleted, token revocation needs to be implemented.
-             * This way we will query the database every time, so if the user no longer exists but the token
-             * is still valid the request will be properly rejected.
+             * Currently, we query the database every time, so if the user no longer exists but the token
+             * is still valid the request is properly rejected.
              * There is a user cache but when the project will scale, JWT revocation should be in place so that we can
              * use the JWT itself for the Authentication principal and not go the database for the User every time.
+             * Non-expired token ids could be stored in the distributed cache.
              */
             Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter = jwt -> {
                 val userDetails = userDetailsService.loadUserByUsername(jwt.getSubject());
@@ -94,10 +93,8 @@ public class SecurityConfig {
                         .and()
                     .authorizeRequests()
                         // /open-api doesn't exist in production
-                        .antMatchers("/open-api/**")
-                            .permitAll()
-                        .antMatchers("/api/auth/login")
-                            .permitAll()
+                        .antMatchers("/open-api/**").permitAll()
+                        .antMatchers("/api/auth/login").permitAll()
                         // there's no need for the already logged in users to create more users
                         // fixme attacker may infinitely create users. Rate limiting required
                         .antMatchers(HttpMethod.POST, "/api/users")
@@ -107,7 +104,7 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.DELETE, "/api/users/{email}")
                             .access("hasRole(@roles.ADMIN) and not @userRepo.hasRole(#email, @roles.ADMIN)")
                         .antMatchers("/api/**/self/**").hasRole(USER)
-                        .antMatchers("/**").hasRole(ADMIN)
+                        .anyRequest().hasRole(ADMIN)
                         .and()
                     .oauth2ResourceServer()
                         .jwt()
