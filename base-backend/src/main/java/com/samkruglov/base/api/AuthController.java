@@ -62,7 +62,7 @@ public class AuthController {
                 new JWTClaimsSet.Builder()
                         .subject(user.getEmail())
                         .issueTime(Date.from(Instant.now()))
-                        .expirationTime(Date.from(Instant.now().plusMillis(validFor.toMillis())))
+                        .expirationTime(Date.from(Instant.now().plus(validFor)))
                         .claim(
                                 OAuth2IntrospectionClaimNames.SCOPE,
                                 user.getRoles()
