@@ -19,5 +19,4 @@ logging.level:
   root: info
   com.toptal.screening.soccerplayermarket: trace
   org.springframework.security.web.access.ExceptionTranslationFilter: debug
-  org.hibernate.tool.hbm2ddl: debug
   org.hibernate.cache: debug

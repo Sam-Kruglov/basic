@@ -107,6 +107,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.toptal.screening</groupId>
+            <artifactId>soccer-player-market-client</artifactId>
+            <version>0.1.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
