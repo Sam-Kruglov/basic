@@ -1,9 +1,10 @@
 package com.samkruglov.base.api;
 
-import com.samkruglov.base.domain.User;
-import com.samkruglov.base.service.UserService;
 import com.samkruglov.base.api.view.CreateUserDto;
 import com.samkruglov.base.api.view.GetUserDto;
+import com.samkruglov.base.api.view.mapper.UserMapper;
+import com.samkruglov.base.domain.User;
+import com.samkruglov.base.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class UserController {
     public static final String CREATE_USER_OP_ID = "create-user";
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Operation(operationId = CREATE_USER_OP_ID)
     @PostMapping
@@ -34,12 +36,12 @@ public class UserController {
 
     @GetMapping("/self")
     public GetUserDto getMe(@AuthenticationPrincipal(expression = "delegate") User user) {
-        return new GetUserDto(user.getEmail());
+        return userMapper.toGetUserDto(user);
     }
 
     @GetMapping("/{email}")
     public GetUserDto getUser(@PathVariable String email) {
-        return new GetUserDto(userService.getByEmail(email).getEmail());
+        return userMapper.toGetUserDto(userService.getByEmail(email));
     }
 
     @DeleteMapping("/{email}")
