@@ -3,10 +3,10 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-- description: Generated server url
-  url: http://localhost:8080
+  - description: Generated server url
+    url: http://localhost:8080
 security:
-- jwt: []
+  - jwt: [ ]
 paths:
   /api/users:
     post:
@@ -21,7 +21,7 @@ paths:
         "200":
           description: OK
         "401":
-          content: {}
+          content: { }
           description: Unauthorized
           headers:
             WWW-Authenticate:
@@ -31,7 +31,7 @@ paths:
                 type: string
               style: simple
         "403":
-          content: {}
+          content: { }
           description: Forbidden
           headers:
             WWW-Authenticate:
@@ -47,10 +47,10 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
       security:
-      - jwt: []
-      - {}
+        - jwt: [ ]
+        - { }
       tags:
-      - users
+        - users
       x-contentType: application/json
       x-accepts: application/json
   /api/auth/login:
@@ -70,7 +70,7 @@ paths:
                 $ref: '#/components/schemas/JwtDto'
           description: OK
         "401":
-          content: {}
+          content: { }
           description: Unauthorized
           headers:
             WWW-Authenticate:
@@ -80,7 +80,7 @@ paths:
                 type: string
               style: simple
         "403":
-          content: {}
+          content: { }
           description: Forbidden
           headers:
             WWW-Authenticate:
@@ -95,27 +95,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
-      security: []
+      security: [ ]
       tags:
-      - auth
+        - auth
       x-contentType: application/json
       x-accepts: application/json
   /api/users/{email}:
     delete:
       operationId: removeUser
       parameters:
-      - explode: false
-        in: path
-        name: email
-        required: true
-        schema:
-          type: string
-        style: simple
+        - explode: false
+          in: path
+          name: email
+          required: true
+          schema:
+            type: string
+          style: simple
       responses:
         "200":
           description: OK
         "401":
-          content: {}
+          content: { }
           description: Unauthorized
           headers:
             WWW-Authenticate:
@@ -125,7 +125,7 @@ paths:
                 type: string
               style: simple
         "403":
-          content: {}
+          content: { }
           description: Forbidden
           headers:
             WWW-Authenticate:
@@ -141,18 +141,18 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
       tags:
-      - users
+        - users
       x-accepts: application/json
     get:
       operationId: getUser
       parameters:
-      - explode: false
-        in: path
-        name: email
-        required: true
-        schema:
-          type: string
-        style: simple
+        - explode: false
+          in: path
+          name: email
+          required: true
+          schema:
+            type: string
+          style: simple
       responses:
         "200":
           content:
@@ -161,7 +161,7 @@ paths:
                 $ref: '#/components/schemas/GetUserDto'
           description: OK
         "401":
-          content: {}
+          content: { }
           description: Unauthorized
           headers:
             WWW-Authenticate:
@@ -171,7 +171,7 @@ paths:
                 type: string
               style: simple
         "403":
-          content: {}
+          content: { }
           description: Forbidden
           headers:
             WWW-Authenticate:
@@ -187,7 +187,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
       tags:
-      - users
+        - users
       x-accepts: application/json
   /api/users/self:
     delete:
@@ -196,7 +196,7 @@ paths:
         "200":
           description: OK
         "401":
-          content: {}
+          content: { }
           description: Unauthorized
           headers:
             WWW-Authenticate:
@@ -206,7 +206,7 @@ paths:
                 type: string
               style: simple
         "403":
-          content: {}
+          content: { }
           description: Forbidden
           headers:
             WWW-Authenticate:
@@ -222,7 +222,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
       tags:
-      - users
+        - users
       x-accepts: application/json
     get:
       operationId: getMe
@@ -234,7 +234,7 @@ paths:
                 $ref: '#/components/schemas/GetUserDto'
           description: OK
         "401":
-          content: {}
+          content: { }
           description: Unauthorized
           headers:
             WWW-Authenticate:
@@ -244,7 +244,7 @@ paths:
                 type: string
               style: simple
         "403":
-          content: {}
+          content: { }
           description: Forbidden
           headers:
             WWW-Authenticate:
@@ -260,12 +260,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
       tags:
-      - users
+        - users
       x-accepts: application/json
 components:
   responses:
     "401":
-      content: {}
+      content: { }
       description: Unauthorized
       headers:
         WWW-Authenticate:
@@ -275,7 +275,7 @@ components:
             type: string
           style: simple
     "403":
-      content: {}
+      content: { }
       description: Forbidden
       headers:
         WWW-Authenticate:
@@ -308,19 +308,19 @@ components:
       properties:
         code:
           enum:
-          - 0
-          - 1
-          - 2
+            - 0
+            - 1
+            - 2
           format: int32
           type: integer
           x-enum-varnames:
-          - INTERNAL_ERROR
-          - USER_NOT_FOUND
-          - EMAIL_ALREADY_EXISTS
+            - INTERNAL_ERROR
+            - USER_NOT_FOUND
+            - EMAIL_ALREADY_EXISTS
           x-enum-descriptions:
-          - Internal error
-          - User not found
-          - Email already exists
+            - Internal error
+            - User not found
+            - Email already exists
         message:
           type: string
       type: object
