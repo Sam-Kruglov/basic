@@ -1,5 +1,6 @@
 package com.samkruglov.base.api;
 
+import com.samkruglov.base.api.config.Current;
 import com.samkruglov.base.api.view.CreateUserDto;
 import com.samkruglov.base.api.view.GetUserDto;
 import com.samkruglov.base.api.view.mapper.UserMapper;
@@ -8,7 +9,6 @@ import com.samkruglov.base.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/self")
-    public GetUserDto getMe(@AuthenticationPrincipal(expression = "delegate") User user) {
+    public GetUserDto getMe(@Current User user) {
         return userMapper.toGetUserDto(user);
     }
 
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @DeleteMapping("/self")
-    public void removeMe(@AuthenticationPrincipal(expression = "delegate") User user) {
+    public void removeMe(@Current User user) {
         userService.delete(user);
     }
 }
