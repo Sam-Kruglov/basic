@@ -1,7 +1,11 @@
 openapi: 3.0.1
 info:
-  title: OpenAPI definition
-  version: v0
+  description: |-
+    Responsible for managing users and roles.
+
+     Following [semantic versioning](https://semver.org/).
+  title: Base App API
+  version: 0.2.0
 servers:
   - description: Generated server url
     url: http://localhost:8080
