@@ -29,6 +29,7 @@ public abstract class UserMapper {
         updater.updateUser(user, changeDto);
     }
 
+    //todo check up on https://github.com/mapstruct/mapstruct/issues/2285
     public User toUser(CreateUserDto userDto, List<Role> roles) {
         return new User(
                 userDto.getFirstName(),
