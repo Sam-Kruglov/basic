@@ -97,6 +97,7 @@ public class SecurityConfig {
                         // /open-api doesn't exist in production
                         .antMatchers("/open-api/**").permitAll()
                         .antMatchers("/api/auth/login").permitAll()
+                        .antMatchers("/api/auth/change-password").authenticated()
                         // there's no need for the already logged in users to create more users
                         // fixme attacker may infinitely create users. Rate limiting required
                         .antMatchers(HttpMethod.POST, "/api/users")

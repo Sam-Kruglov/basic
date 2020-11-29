@@ -5,7 +5,7 @@ info:
 
      Following [semantic versioning](https://semver.org/).
   title: Base App API
-  version: 0.2.0
+  version: 0.4.0
 servers:
   - description: Generated server url
     url: http://localhost:8080
@@ -100,6 +100,48 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
       security: [ ]
+      tags:
+        - auth
+      x-contentType: application/json
+      x-accepts: application/json
+  /api/auth/change-password:
+    put:
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "401":
+          content: { }
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: { }
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
       tags:
         - auth
       x-contentType: application/json
@@ -391,6 +433,8 @@ components:
 
           * 2 - Email already exists
 
+          * 3 - Old password does not match
+
         * 404:
 
           * 1 - User not found
@@ -405,16 +449,19 @@ components:
             - 0
             - 1
             - 2
+            - 3
           format: int32
           type: integer
           x-enum-varnames:
             - INTERNAL_ERROR
             - USER_NOT_FOUND
             - EMAIL_ALREADY_EXISTS
+            - OLD_PASSWORD_DOES_NOT_MATCH
           x-enum-descriptions:
             - Internal error
             - User not found
             - Email already exists
+            - Old password does not match
         message:
           type: string
       type: object
@@ -426,6 +473,16 @@ components:
         firstName:
           type: string
         lastName:
+          type: string
+      type: object
+    ChangePasswordDto:
+      example:
+        oldPassword: oldPassword
+        newPassword: newPassword
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
           type: string
       type: object
     CreateUserDto:

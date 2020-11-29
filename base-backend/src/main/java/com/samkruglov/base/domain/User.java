@@ -56,6 +56,7 @@ public class User extends Identifiable {
 
     @NonNull
     @Column(columnDefinition = "varchar_ignorecase(500)", nullable = false)
+    @Setter
     private String encodedPassword;
 
     @NonNull

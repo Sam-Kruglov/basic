@@ -18,59 +18,62 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
-/** CredentialsDto */
-@JsonPropertyOrder({CredentialsDto.JSON_PROPERTY_EMAIL, CredentialsDto.JSON_PROPERTY_PASSWORD})
-public class CredentialsDto {
-  public static final String JSON_PROPERTY_EMAIL = "email";
-  private String email;
+/** ChangePasswordDto */
+@JsonPropertyOrder({
+  ChangePasswordDto.JSON_PROPERTY_OLD_PASSWORD,
+  ChangePasswordDto.JSON_PROPERTY_NEW_PASSWORD
+})
+public class ChangePasswordDto {
+  public static final String JSON_PROPERTY_OLD_PASSWORD = "oldPassword";
+  private String oldPassword;
 
-  public static final String JSON_PROPERTY_PASSWORD = "password";
-  private String password;
+  public static final String JSON_PROPERTY_NEW_PASSWORD = "newPassword";
+  private String newPassword;
 
-  public CredentialsDto email(String email) {
+  public ChangePasswordDto oldPassword(String oldPassword) {
 
-    this.email = email;
+    this.oldPassword = oldPassword;
     return this;
   }
 
   /**
-   * Get email
+   * Get oldPassword
    *
-   * @return email
+   * @return oldPassword
    */
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
-  @JsonProperty(JSON_PROPERTY_EMAIL)
+  @JsonProperty(JSON_PROPERTY_OLD_PASSWORD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public String getEmail() {
-    return email;
+  public String getOldPassword() {
+    return oldPassword;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setOldPassword(String oldPassword) {
+    this.oldPassword = oldPassword;
   }
 
-  public CredentialsDto password(String password) {
+  public ChangePasswordDto newPassword(String newPassword) {
 
-    this.password = password;
+    this.newPassword = newPassword;
     return this;
   }
 
   /**
-   * Get password
+   * Get newPassword
    *
-   * @return password
+   * @return newPassword
    */
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
-  @JsonProperty(JSON_PROPERTY_PASSWORD)
+  @JsonProperty(JSON_PROPERTY_NEW_PASSWORD)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public String getPassword() {
-    return password;
+  public String getNewPassword() {
+    return newPassword;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
+  public void setNewPassword(String newPassword) {
+    this.newPassword = newPassword;
   }
 
   @Override
@@ -81,22 +84,22 @@ public class CredentialsDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    CredentialsDto credentialsDto = (CredentialsDto) o;
-    return Objects.equals(this.email, credentialsDto.email)
-        && Objects.equals(this.password, credentialsDto.password);
+    ChangePasswordDto changePasswordDto = (ChangePasswordDto) o;
+    return Objects.equals(this.oldPassword, changePasswordDto.oldPassword)
+        && Objects.equals(this.newPassword, changePasswordDto.newPassword);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(email, password);
+    return Objects.hash(oldPassword, newPassword);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class CredentialsDto {\n");
-    sb.append("    email: ").append(toIndentedString(email)).append("\n");
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("class ChangePasswordDto {\n");
+    sb.append("    oldPassword: ").append(toIndentedString(oldPassword)).append("\n");
+    sb.append("    newPassword: ").append(toIndentedString(newPassword)).append("\n");
     sb.append("}");
     return sb.toString();
   }
