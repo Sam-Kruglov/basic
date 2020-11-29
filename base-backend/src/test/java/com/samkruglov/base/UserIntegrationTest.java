@@ -1,9 +1,11 @@
 package com.samkruglov.base;
 
 import com.samkruglov.base.client.gen.api.UsersApi;
+import com.samkruglov.base.client.gen.view.ChangeUserDto;
 import com.samkruglov.base.client.gen.view.CreateUserDto;
 import com.samkruglov.base.config.IntegrationTest;
 import lombok.val;
+import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -90,6 +92,14 @@ class UserIntegrationTest extends IntegrationTest {
             assertNoPermissionTo(() -> usersApi.createUser(new CreateUserDto().email("em").password("p")));
         }
 
+        @Test
+        void can_edit_self(SoftAssertions softly) {
+            val newName = "steve";
+            softly.assertThatCode(() -> usersApi.changeMe(new ChangeUserDto().firstName(newName)))
+                  .doesNotThrowAnyException();
+            softly.assertThat(usersApi.getMe().getFirstName()).isEqualTo(newName);
+        }
+
         @Nested
         class given_another_user_2 {
             String email2 = "mike.gordon@company.com";
@@ -103,6 +113,11 @@ class UserIntegrationTest extends IntegrationTest {
             @Test
             void cannot_see_user_2() {
                 assertNoPermissionTo(() -> usersApi.getUser(email2));
+            }
+
+            @Test
+            void cannot_edit_user_2() {
+                assertNoPermissionTo(() -> usersApi.changeUser(email2, new ChangeUserDto().firstName("steve")));
             }
 
             @Test
@@ -157,6 +172,13 @@ class UserIntegrationTest extends IntegrationTest {
 
             @Order(2)
             @Test
+            void can_edit_user_2() {
+                assertThatNoException()
+                        .isThrownBy(() -> usersApi.changeUser(email2, new ChangeUserDto().firstName("steve")));
+            }
+
+            @Order(3)
+            @Test
             void can_remove_user_2() {
                 assertThatNoException().isThrownBy(() -> usersApi.removeUser(email2));
             }
@@ -180,6 +202,12 @@ class UserIntegrationTest extends IntegrationTest {
             }
 
             @Order(2)
+            @Test
+            void cannot_edit_admin_2() {
+                assertNoPermissionTo(() -> usersApi.changeUser(email2, new ChangeUserDto().firstName("steve")));
+            }
+
+            @Order(3)
             @Test
             void cannot_remove_admin_2() {
                 assertNoPermissionTo(() -> usersApi.removeUser(email2));

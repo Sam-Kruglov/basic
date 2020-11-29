@@ -1,5 +1,6 @@
 package com.samkruglov.base.service;
 
+import com.samkruglov.base.api.view.ChangeUserDto;
 import com.samkruglov.base.api.view.CreateUserDto;
 import com.samkruglov.base.api.view.mapper.UserMapper;
 import com.samkruglov.base.config.Roles;
@@ -49,5 +50,14 @@ public class UserService {
 
     public void delete(User user) {
         repo.delete(user);
+    }
+
+    public void change(User user, ChangeUserDto changeDto) {
+        mapper.updateUser(user, changeDto);
+        repo.save(user);
+    }
+
+    public void changeByEmail(String email, ChangeUserDto changeDto) {
+        change(getByEmail(email), changeDto);
     }
 }
