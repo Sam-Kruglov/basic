@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class Identifiable {
+public class Identifiable extends Auditable {
 
     private static final String SEQUENCE_PER_ENTITY_GENERATOR = "sequence_per_entity_generator";
 
