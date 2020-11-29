@@ -8,6 +8,7 @@ import com.samkruglov.base.api.view.mapper.config.UpdaterMapperConfig;
 import com.samkruglov.base.domain.Role;
 import com.samkruglov.base.domain.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,15 +30,8 @@ public abstract class UserMapper {
         updater.updateUser(user, changeDto);
     }
 
-    public User toUser(CreateUserDto userDto, List<Role> roles) {
-        return new User(
-                userDto.getFirstName(),
-                userDto.getLastName(),
-                userDto.getEmail(),
-                passwordEncoder.encode(userDto.getPassword()),
-                roles
-        );
-    }
+    @Mapping(target = "encodedPassword", expression = "java(passwordEncoder.encode(userDto.getPassword()))")
+    public abstract User toUser(CreateUserDto userDto, List<Role> roles);
 
     @Mapper(config = UpdaterMapperConfig.class)
     interface Updater {
