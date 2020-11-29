@@ -27,7 +27,6 @@ public class IntegrationTest {
         apiClient = new EnhancedApiClient("http://localhost:" + port, Logger.Level.FULL);
         //we could autowire entity manager but that one cannot start transactions
         entityManager = entityManagerFactory.createEntityManager();
-        clearDatabase();
     }
 
     protected void clearDatabase() {
