@@ -101,9 +101,10 @@ public class SecurityConfig {
                             .access("not authenticated or hasRole(@roles.ADMIN)")
                         //admin users can only be removed manually directly from the database
                         .antMatchers(HttpMethod.DELETE, "/api/users/self").not().hasRole(ADMIN)
-                        .antMatchers(HttpMethod.DELETE, "/api/users/{email}")
-                            .access("hasRole(@roles.ADMIN) and not @userRepo.hasRole(#email, @roles.ADMIN)")
                         .antMatchers("/api/**/self/**").hasRole(USER)
+                        .antMatchers(HttpMethod.GET, "/api/users/{email}").hasRole(ADMIN)
+                        .antMatchers("/api/users/{email}")
+                            .access("hasRole(@roles.ADMIN) and not @userRepo.hasRole(#email, @roles.ADMIN)")
                         .anyRequest().hasRole(ADMIN)
                         .and()
                     .oauth2ResourceServer()
