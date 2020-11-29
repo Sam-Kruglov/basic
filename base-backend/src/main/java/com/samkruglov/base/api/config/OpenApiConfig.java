@@ -7,6 +7,7 @@ import io.swagger.v3.core.util.RefUtils;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.headers.Header;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.MediaType;
@@ -16,9 +17,11 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import lombok.Value;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP;
@@ -46,7 +50,10 @@ public class OpenApiConfig {
     private final List<CommonResponse> commonResponses = new LinkedList<>();
 
     @Bean
-    public OpenAPI openApi() {
+    public OpenAPI openApi(
+            @Value("${spring.application.name}") String applicationName,
+            BuildProperties buildProperties
+    ) {
         val components = new Components();
         components.addSecuritySchemes(JWT_SECURITY_SCHEME,
                 new SecurityScheme()
@@ -57,7 +64,18 @@ public class OpenApiConfig {
         );
         addCommonSecurityResponses(components);
         addDefaultErrorResponse(components);
+        val capitalizedApplicationName = Stream.of(applicationName.split("\\W"))
+                                               .map(StringUtils::capitalize)
+                                               .collect(Collectors.joining(" "));
+        val description = buildProperties.get("description")
+                                         //maven description adds extra spaces
+                                         .replaceAll(" +", " ");
         return new OpenAPI()
+                .info(new Info()
+                        .title(capitalizedApplicationName + " API")
+                        .description(description)
+                        .version(buildProperties.getVersion())
+                )
                 .components(components)
                 .addSecurityItem(new SecurityRequirement().addList(JWT_SECURITY_SCHEME));
     }
@@ -70,6 +88,7 @@ public class OpenApiConfig {
               .forEach((httpStatusCode, errorTypes) -> {
                   descriptionBuilder.append(format("* %d:\n\n", httpStatusCode));
                   errorTypes.forEach(errorType -> descriptionBuilder.append(
+                          //markdown only registers new line if there are 2 of them
                           format("  * %d - %s\n\n", errorType.errorCode, errorType.description)
                   ));
               });
@@ -163,7 +182,7 @@ public class OpenApiConfig {
         };
     }
 
-    @Value
+    @lombok.Value
     private static class CommonResponse {
         String httpStatusCode;
         String reference;
