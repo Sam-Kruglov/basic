@@ -11,6 +11,7 @@ import com.samkruglov.base.service.error.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,7 @@ public class UserService {
         return repo.findByEmail(email).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
     }
 
+    @PreAuthorize("not this.getByEmail(#email).hasRole(@roles.ADMIN)")
     public void deleteByEmail(String email) {
         delete(getByEmail(email));
     }
@@ -57,6 +59,7 @@ public class UserService {
         repo.save(user);
     }
 
+    @PreAuthorize("not this.getByEmail(#email).hasRole(@roles.ADMIN)")
     public void changeByEmail(String email, ChangeUserDto changeDto) {
         change(getByEmail(email), changeDto);
     }

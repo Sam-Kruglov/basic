@@ -5,6 +5,7 @@ import com.samkruglov.base.service.error.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,6 +32,14 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler
     public Object auth(AuthenticationException e) {
+        throw e;
+    }
+
+    /**
+     * delegating to {@link ExceptionTranslationFilter}
+     */
+    @ExceptionHandler
+    public Object auth(AccessDeniedException e) {
         throw e;
     }
 

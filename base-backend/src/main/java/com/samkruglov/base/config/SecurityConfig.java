@@ -22,6 +22,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -53,6 +54,7 @@ import static java.util.stream.Collectors.toList;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -102,9 +104,6 @@ public class SecurityConfig {
                         //admin users can only be removed manually directly from the database
                         .antMatchers(HttpMethod.DELETE, "/api/users/self").not().hasRole(ADMIN)
                         .antMatchers("/api/**/self/**").hasRole(USER)
-                        .antMatchers(HttpMethod.GET, "/api/users/{email}").hasRole(ADMIN)
-                        .antMatchers("/api/users/{email}")
-                            .access("hasRole(@roles.ADMIN) and not @userRepo.hasRole(#email, @roles.ADMIN)")
                         .anyRequest().hasRole(ADMIN)
                         .and()
                     .oauth2ResourceServer()

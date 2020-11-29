@@ -3,7 +3,6 @@ package com.samkruglov.base.repo.impl;
 import com.samkruglov.base.domain.User;
 import com.samkruglov.base.repo.UserRepo;
 import com.samkruglov.base.repo.config.HibernateRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
@@ -28,13 +27,6 @@ public interface JpaUserRepo extends UserRepo, HibernateRepository<User, Long> {
 
     @Override
     boolean existsByEmail(String email);
-
-    @Query(value = "select count(u.id) > 0 from users u " +
-            "join users_to_roles utr on u.id = utr.user_id " +
-            "join roles r on utr.role_id = r.id and r.name = :role " +
-            "where u.email = :email", nativeQuery = true)
-    @Override
-    boolean hasRole(String email, String role);
 
     @QueryHints({
             @QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"),
