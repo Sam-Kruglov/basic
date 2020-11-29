@@ -25,32 +25,32 @@ public class UserController {
 
     public static final String CREATE_USER_OP_ID = "create-user";
 
-    private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserService service;
+    private final UserMapper mapper;
 
     @Operation(operationId = CREATE_USER_OP_ID)
     @PostMapping
     public void createUser(@RequestBody CreateUserDto userDto) {
-        userService.create(userDto);
+        service.create(userDto);
     }
 
     @GetMapping("/self")
     public GetUserDto getMe(@Current User user) {
-        return userMapper.toGetUserDto(user);
+        return mapper.toGetUserDto(user);
     }
 
     @GetMapping("/{email}")
     public GetUserDto getUser(@PathVariable String email) {
-        return userMapper.toGetUserDto(userService.getByEmail(email));
+        return mapper.toGetUserDto(service.getByEmail(email));
     }
 
     @DeleteMapping("/{email}")
     public void removeUser(@PathVariable String email) {
-        userService.deleteByEmail(email);
+        service.deleteByEmail(email);
     }
 
     @DeleteMapping("/self")
     public void removeMe(@Current User user) {
-        userService.delete(user);
+        service.delete(user);
     }
 }

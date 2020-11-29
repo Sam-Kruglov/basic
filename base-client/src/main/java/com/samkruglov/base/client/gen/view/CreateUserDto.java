@@ -19,13 +19,70 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 /** CreateUserDto */
-@JsonPropertyOrder({CreateUserDto.JSON_PROPERTY_EMAIL, CreateUserDto.JSON_PROPERTY_PASSWORD})
+@JsonPropertyOrder({
+  CreateUserDto.JSON_PROPERTY_FIRST_NAME,
+  CreateUserDto.JSON_PROPERTY_LAST_NAME,
+  CreateUserDto.JSON_PROPERTY_EMAIL,
+  CreateUserDto.JSON_PROPERTY_PASSWORD
+})
 public class CreateUserDto {
+  public static final String JSON_PROPERTY_FIRST_NAME = "firstName";
+  private String firstName;
+
+  public static final String JSON_PROPERTY_LAST_NAME = "lastName";
+  private String lastName;
+
   public static final String JSON_PROPERTY_EMAIL = "email";
   private String email;
 
   public static final String JSON_PROPERTY_PASSWORD = "password";
   private String password;
+
+  public CreateUserDto firstName(String firstName) {
+
+    this.firstName = firstName;
+    return this;
+  }
+
+  /**
+   * Get firstName
+   *
+   * @return firstName
+   */
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_FIRST_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public CreateUserDto lastName(String lastName) {
+
+    this.lastName = lastName;
+    return this;
+  }
+
+  /**
+   * Get lastName
+   *
+   * @return lastName
+   */
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_LAST_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
   public CreateUserDto email(String email) {
 
@@ -82,19 +139,23 @@ public class CreateUserDto {
       return false;
     }
     CreateUserDto createUserDto = (CreateUserDto) o;
-    return Objects.equals(this.email, createUserDto.email)
+    return Objects.equals(this.firstName, createUserDto.firstName)
+        && Objects.equals(this.lastName, createUserDto.lastName)
+        && Objects.equals(this.email, createUserDto.email)
         && Objects.equals(this.password, createUserDto.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(email, password);
+    return Objects.hash(firstName, lastName, email, password);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class CreateUserDto {\n");
+    sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
+    sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("}");

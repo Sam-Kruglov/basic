@@ -4,7 +4,7 @@
 
     <groupId>com.samkruglov</groupId>
     <artifactId>base-client</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <!-- This can be manually edited, next generation will not overwrite it -->
     <description>
         Automatically generated client SDK for the API provided by the backend.
