@@ -330,9 +330,15 @@ components:
       type: object
     CreateUserDto:
       example:
+        firstName: firstName
+        lastName: lastName
         password: password
         email: email
       properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
         email:
           type: string
         password:
@@ -357,9 +363,15 @@ components:
       type: object
     GetUserDto:
       example:
+        firstName: firstName
+        lastName: lastName
         email: email
       properties:
         email:
+          type: string
+        firstName:
+          type: string
+        lastName:
           type: string
       type: object
   securitySchemes:

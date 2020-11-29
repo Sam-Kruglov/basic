@@ -19,12 +19,18 @@ import java.util.stream.Stream;
 public class IntegrationTest {
 
     protected EnhancedApiClient apiClient;
+    protected UserTestFactory userFactory;
 
     private EntityManager entityManager;
 
     @BeforeAll
-    void setUp(@LocalServerPort int port, @Autowired EntityManagerFactory entityManagerFactory) {
+    void setUp(
+            @LocalServerPort int port,
+            @Autowired UserTestFactory userFactory,
+            @Autowired EntityManagerFactory entityManagerFactory
+    ) {
         apiClient = new EnhancedApiClient("http://localhost:" + port, Logger.Level.FULL);
+        this.userFactory = userFactory;
         //we could autowire entity manager but that one cannot start transactions
         entityManager = entityManagerFactory.createEntityManager();
     }

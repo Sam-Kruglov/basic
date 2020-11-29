@@ -19,10 +19,20 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 /** GetUserDto */
-@JsonPropertyOrder({GetUserDto.JSON_PROPERTY_EMAIL})
+@JsonPropertyOrder({
+  GetUserDto.JSON_PROPERTY_EMAIL,
+  GetUserDto.JSON_PROPERTY_FIRST_NAME,
+  GetUserDto.JSON_PROPERTY_LAST_NAME
+})
 public class GetUserDto {
   public static final String JSON_PROPERTY_EMAIL = "email";
   private String email;
+
+  public static final String JSON_PROPERTY_FIRST_NAME = "firstName";
+  private String firstName;
+
+  public static final String JSON_PROPERTY_LAST_NAME = "lastName";
+  private String lastName;
 
   public GetUserDto email(String email) {
 
@@ -47,6 +57,52 @@ public class GetUserDto {
     this.email = email;
   }
 
+  public GetUserDto firstName(String firstName) {
+
+    this.firstName = firstName;
+    return this;
+  }
+
+  /**
+   * Get firstName
+   *
+   * @return firstName
+   */
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_FIRST_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public GetUserDto lastName(String lastName) {
+
+    this.lastName = lastName;
+    return this;
+  }
+
+  /**
+   * Get lastName
+   *
+   * @return lastName
+   */
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+  @JsonProperty(JSON_PROPERTY_LAST_NAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -56,12 +112,14 @@ public class GetUserDto {
       return false;
     }
     GetUserDto getUserDto = (GetUserDto) o;
-    return Objects.equals(this.email, getUserDto.email);
+    return Objects.equals(this.email, getUserDto.email)
+        && Objects.equals(this.firstName, getUserDto.firstName)
+        && Objects.equals(this.lastName, getUserDto.lastName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(email);
+    return Objects.hash(email, firstName, lastName);
   }
 
   @Override
@@ -69,6 +127,8 @@ public class GetUserDto {
     StringBuilder sb = new StringBuilder();
     sb.append("class GetUserDto {\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
+    sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
+    sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
     sb.append("}");
     return sb.toString();
   }

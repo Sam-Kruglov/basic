@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,6 +38,14 @@ public class User extends Identifiable {
 
     public static final String TABLE_NAME = "users";
 
+    @NonNull
+    @Setter
+    private String firstName;
+
+    @NonNull
+    @Setter
+    private String lastName;
+
     /**
      * This is used as a username for Spring Security
      */
@@ -62,6 +71,10 @@ public class User extends Identifiable {
 
     public boolean hasRole(String roleName) {
         return getRoles().stream().map(Role::getName).anyMatch(Predicate.isEqual(roleName));
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     @Override

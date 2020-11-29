@@ -1,17 +1,17 @@
 package com.samkruglov.base;
 
+import com.samkruglov.base.client.gen.api.UsersApi;
 import com.samkruglov.base.client.gen.view.CreateUserDto;
 import com.samkruglov.base.config.IntegrationTest;
-import com.samkruglov.base.config.UserTestFactory;
-import com.samkruglov.base.client.gen.api.UsersApi;
 import lombok.val;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.samkruglov.base.config.TestUtil.assertNoPermissionTo;
 import static com.samkruglov.base.config.TestUtil.assertThatUnauthorized;
@@ -22,8 +22,8 @@ class UserIntegrationTest extends IntegrationTest {
 
     UsersApi usersApi;
 
-    String email = "john@company.com";
-    String password = "jn";
+    String email = "john.smith@company.com";
+    String password = "js";
 
     void login() {
         apiClient.authenticate(email, password);
@@ -46,7 +46,11 @@ class UserIntegrationTest extends IntegrationTest {
         @Order(1)
         @Test
         void create_user_and_login() {
-            val createUserDto = new CreateUserDto().email(email).password(password);
+            val createUserDto = new CreateUserDto()
+                    .email(email)
+                    .password(password)
+                    .firstName("john")
+                    .lastName("smith");
             usersApi.createUser(createUserDto);
             login();
         }
@@ -71,10 +75,11 @@ class UserIntegrationTest extends IntegrationTest {
     }
 
     @Nested
+    @ExtendWith(SoftAssertionsExtension.class)
     class given_authenticated_user {
 
         @BeforeAll
-        void setUp(@Autowired UserTestFactory userFactory) {
+        void setUp() {
             clearDatabase();
             userFactory.createUser(email, password);
             login();
@@ -87,11 +92,11 @@ class UserIntegrationTest extends IntegrationTest {
 
         @Nested
         class given_another_user_2 {
-            String email2 = "mike@company.com";
-            String password2 = "mk";
+            String email2 = "mike.gordon@company.com";
+            String password2 = "mg";
 
             @BeforeAll
-            void setUp(@Autowired UserTestFactory userFactory) {
+            void setUp() {
                 userFactory.createUser(email2, password2);
             }
 
@@ -111,7 +116,7 @@ class UserIntegrationTest extends IntegrationTest {
     class given_authenticated_admin {
 
         @BeforeAll
-        void setUp(@Autowired UserTestFactory userFactory) {
+        void setUp() {
             clearDatabase();
             userFactory.createAdmin(email, password);
             login();
@@ -119,8 +124,13 @@ class UserIntegrationTest extends IntegrationTest {
 
         @Test
         void can_create_more_users() {
+            val userDto = new CreateUserDto()
+                    .firstName("mark")
+                    .lastName("gold")
+                    .email("mark.gold@company.com")
+                    .password("p");
             assertThatNoException()
-                    .isThrownBy(() -> usersApi.createUser(new CreateUserDto().email("em").password("p")));
+                    .isThrownBy(() -> usersApi.createUser(userDto));
         }
 
         @Test
@@ -131,11 +141,11 @@ class UserIntegrationTest extends IntegrationTest {
         @Nested
         @TestMethodOrder(OrderAnnotation.class)
         class given_another_user_2 {
-            String email2 = "rob@company.com";
-            String password2 = "rb";
+            String email2 = "rob.wilson@company.com";
+            String password2 = "rw";
 
             @BeforeAll
-            void setUp(@Autowired UserTestFactory userFactory) {
+            void setUp() {
                 userFactory.createUser(email2, password2);
             }
 
@@ -155,11 +165,11 @@ class UserIntegrationTest extends IntegrationTest {
         @Nested
         @TestMethodOrder(OrderAnnotation.class)
         class given_another_admin_2 {
-            String email2 = "mike@company.com";
-            String password2 = "mk";
+            String email2 = "mike.gordon@company.com";
+            String password2 = "mg";
 
             @BeforeAll
-            void setUp(@Autowired UserTestFactory userFactory) {
+            void setUp() {
                 userFactory.createAdmin(email2, password2);
             }
 

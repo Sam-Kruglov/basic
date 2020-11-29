@@ -168,10 +168,13 @@ public class SecurityConfig {
                 RoleRepo roleRepo
         ) {
             return event -> {
-                val username = "admin@company.com";
-                if (!userRepo.existsByEmail(username)) {
+                val anyName = "admin";
+                val email = anyName + "." + anyName + "@company.com";
+                if (!userRepo.existsByEmail(email)) {
                     userRepo.save(new User(
-                            username,
+                            anyName,
+                            anyName,
+                            email,
                             passwordEncoder.encode("adminpass"),
                             List.of(roleRepo.findByName(USER), roleRepo.findByName(ADMIN))
                     ));
