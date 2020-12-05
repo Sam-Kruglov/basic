@@ -1,4 +1,4 @@
-package com.samkruglov.base.api.config;
+package com.samkruglov.base.api.config.error;
 
 import com.samkruglov.base.service.error.BaseErrorType;
 import lombok.Value;

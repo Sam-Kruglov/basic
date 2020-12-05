@@ -1,6 +1,7 @@
 package com.samkruglov.base.api.config;
 
 import com.samkruglov.base.api.UserController;
+import com.samkruglov.base.api.config.error.ErrorResponse;
 import com.samkruglov.base.service.error.BaseErrorType;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.util.RefUtils;
