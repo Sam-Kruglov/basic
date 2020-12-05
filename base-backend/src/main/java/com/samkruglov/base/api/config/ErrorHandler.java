@@ -30,16 +30,8 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     /**
      * delegating to {@link ExceptionTranslationFilter}
      */
-    @ExceptionHandler
-    public Object auth(AuthenticationException e) {
-        throw e;
-    }
-
-    /**
-     * delegating to {@link ExceptionTranslationFilter}
-     */
-    @ExceptionHandler
-    public Object auth(AccessDeniedException e) {
+    @ExceptionHandler({AuthenticationException.class, AccessDeniedException.class})
+    public Object auth(RuntimeException e) {
         throw e;
     }
 
