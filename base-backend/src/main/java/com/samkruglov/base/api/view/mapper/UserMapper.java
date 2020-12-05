@@ -1,10 +1,10 @@
 package com.samkruglov.base.api.view.mapper;
 
-import com.samkruglov.base.api.view.ChangeUserDto;
-import com.samkruglov.base.api.view.CreateUserDto;
-import com.samkruglov.base.api.view.GetUserDto;
 import com.samkruglov.base.api.view.mapper.config.CreatorMapperConfig;
 import com.samkruglov.base.api.view.mapper.config.UpdaterMapperConfig;
+import com.samkruglov.base.api.view.request.ChangeUserDto;
+import com.samkruglov.base.api.view.request.CreateUserDto;
+import com.samkruglov.base.api.view.response.GetUserDto;
 import com.samkruglov.base.domain.Role;
 import com.samkruglov.base.domain.User;
 import org.mapstruct.Mapper;

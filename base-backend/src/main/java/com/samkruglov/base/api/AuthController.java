@@ -2,9 +2,9 @@ package com.samkruglov.base.api;
 
 import com.samkruglov.base.api.config.Current;
 import com.samkruglov.base.api.config.OpenApiConfig;
-import com.samkruglov.base.api.view.ChangePasswordDto;
-import com.samkruglov.base.api.view.CredentialsDto;
-import com.samkruglov.base.api.view.JwtDto;
+import com.samkruglov.base.api.view.request.ChangePasswordDto;
+import com.samkruglov.base.api.view.request.CredentialsDto;
+import com.samkruglov.base.api.view.response.JwtDto;
 import com.samkruglov.base.domain.User;
 import com.samkruglov.base.service.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;

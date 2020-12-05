@@ -1,8 +1,8 @@
 package com.samkruglov.base.service;
 
-import com.samkruglov.base.api.view.ChangeUserDto;
-import com.samkruglov.base.api.view.CreateUserDto;
 import com.samkruglov.base.api.view.mapper.UserMapper;
+import com.samkruglov.base.api.view.request.ChangeUserDto;
+import com.samkruglov.base.api.view.request.CreateUserDto;
 import com.samkruglov.base.config.Roles;
 import com.samkruglov.base.domain.User;
 import com.samkruglov.base.repo.RoleRepo;

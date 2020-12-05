@@ -1,4 +1,4 @@
-package com.samkruglov.base.api.view;
+package com.samkruglov.base.api.view.request;
 
 import lombok.Value;
 
