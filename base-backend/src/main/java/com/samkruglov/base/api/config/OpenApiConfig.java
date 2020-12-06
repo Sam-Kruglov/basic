@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,7 @@ public class OpenApiConfig {
     private final List<CommonResponse> commonResponses = new LinkedList<>();
 
     @Bean
+    @DependsOn("modelConverterRegistrar")
     public OpenAPI openApi(
             @Value("${spring.application.name}") String applicationName,
             BuildProperties buildProperties
@@ -136,6 +138,7 @@ public class OpenApiConfig {
     }
 
     private Schema<?> createSchema(Components components, Class<?> clazz) {
+        //gotta wait for the org.springdoc.core.converters.ModelConverterRegistrar bean to have all converters in place
         val resolvedSchema = ModelConverters.getInstance().readAllAsResolvedSchema(clazz);
         resolvedSchema.referencedSchemas.forEach(components::addSchemas);
         return resolvedSchema.schema;
