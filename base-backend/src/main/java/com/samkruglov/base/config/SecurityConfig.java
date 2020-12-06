@@ -62,7 +62,6 @@ public class SecurityConfig {
         return new RSASSASigner(privateKey);
     }
 
-    @Configuration
     @RequiredArgsConstructor
     public static class ApiConfig extends WebSecurityConfigurerAdapter {
         private final UserDetailsService userDetailsService;
@@ -149,7 +148,6 @@ public class SecurityConfig {
                                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    @Configuration
     @Profile("dev")
     public static class DevConfig {
 
@@ -184,7 +182,6 @@ public class SecurityConfig {
         }
     }
 
-    @Configuration
     @Profile("dev | test")
     public static class LocalConfig {
 
