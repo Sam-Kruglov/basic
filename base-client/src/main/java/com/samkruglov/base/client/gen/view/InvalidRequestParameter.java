@@ -15,63 +15,65 @@ package com.samkruglov.base.client.gen.view;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
-/** ChangePasswordDto */
+/** May be present when the code is 4 */
+@ApiModel(description = "May be present when the code is 4")
 @JsonPropertyOrder({
-  ChangePasswordDto.JSON_PROPERTY_OLD_PASSWORD,
-  ChangePasswordDto.JSON_PROPERTY_NEW_PASSWORD
+  InvalidRequestParameter.JSON_PROPERTY_NAME,
+  InvalidRequestParameter.JSON_PROPERTY_MESSAGE
 })
-public class ChangePasswordDto {
-  public static final String JSON_PROPERTY_OLD_PASSWORD = "oldPassword";
-  private String oldPassword;
+public class InvalidRequestParameter {
+  public static final String JSON_PROPERTY_NAME = "name";
+  private String name;
 
-  public static final String JSON_PROPERTY_NEW_PASSWORD = "newPassword";
-  private String newPassword;
+  public static final String JSON_PROPERTY_MESSAGE = "message";
+  private String message;
 
-  public ChangePasswordDto oldPassword(String oldPassword) {
+  public InvalidRequestParameter name(String name) {
 
-    this.oldPassword = oldPassword;
+    this.name = name;
     return this;
   }
 
   /**
-   * Get oldPassword
+   * Get name
    *
-   * @return oldPassword
+   * @return name
    */
   @ApiModelProperty(required = true, value = "")
-  @JsonProperty(JSON_PROPERTY_OLD_PASSWORD)
+  @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public String getOldPassword() {
-    return oldPassword;
+  public String getName() {
+    return name;
   }
 
-  public void setOldPassword(String oldPassword) {
-    this.oldPassword = oldPassword;
+  public void setName(String name) {
+    this.name = name;
   }
 
-  public ChangePasswordDto newPassword(String newPassword) {
+  public InvalidRequestParameter message(String message) {
 
-    this.newPassword = newPassword;
+    this.message = message;
     return this;
   }
 
   /**
-   * Get newPassword
+   * Get message
    *
-   * @return newPassword
+   * @return message
    */
   @ApiModelProperty(required = true, value = "")
-  @JsonProperty(JSON_PROPERTY_NEW_PASSWORD)
+  @JsonProperty(JSON_PROPERTY_MESSAGE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public String getNewPassword() {
-    return newPassword;
+  public String getMessage() {
+    return message;
   }
 
-  public void setNewPassword(String newPassword) {
-    this.newPassword = newPassword;
+  public void setMessage(String message) {
+    this.message = message;
   }
 
   @Override
@@ -82,22 +84,22 @@ public class ChangePasswordDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ChangePasswordDto changePasswordDto = (ChangePasswordDto) o;
-    return Objects.equals(this.oldPassword, changePasswordDto.oldPassword)
-        && Objects.equals(this.newPassword, changePasswordDto.newPassword);
+    InvalidRequestParameter invalidRequestParameter = (InvalidRequestParameter) o;
+    return Objects.equals(this.name, invalidRequestParameter.name)
+        && Objects.equals(this.message, invalidRequestParameter.message);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(oldPassword, newPassword);
+    return Objects.hash(name, message);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ChangePasswordDto {\n");
-    sb.append("    oldPassword: ").append(toIndentedString(oldPassword)).append("\n");
-    sb.append("    newPassword: ").append(toIndentedString(newPassword)).append("\n");
+    sb.append("class InvalidRequestParameter {\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("}");
     return sb.toString();
   }

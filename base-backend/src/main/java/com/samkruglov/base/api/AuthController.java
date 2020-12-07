@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "auth")
@@ -27,12 +29,12 @@ public class AuthController {
     @Tag(name = OpenApiConfig.INSECURE_TAG)
     @SneakyThrows
     @PostMapping("/login")
-    public JwtDto login(@RequestBody CredentialsDto credentials) {
+    public JwtDto login(@Valid @RequestBody CredentialsDto credentials) {
         return new JwtDto(service.login(credentials).serialize());
     }
 
     @PutMapping("/change-password")
-    public void changePassword(@Current User user, @RequestBody ChangePasswordDto changePasswordDto) {
+    public void changePassword(@Current User user, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
         service.changePassword(user, changePasswordDto);
     }
 }

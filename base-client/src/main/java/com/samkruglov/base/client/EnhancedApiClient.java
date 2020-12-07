@@ -5,14 +5,15 @@ import com.samkruglov.base.client.error.BaseException;
 import com.samkruglov.base.client.gen.ApiClient;
 import com.samkruglov.base.client.gen.api.AuthApi;
 import com.samkruglov.base.client.gen.view.CredentialsDto;
-import com.samkruglov.base.client.gen.view.JwtDto;
 import com.samkruglov.base.client.gen.view.ErrorResponse;
+import com.samkruglov.base.client.gen.view.JwtDto;
 import feign.Feign;
 import feign.Logger;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * This class was created manually to improve the capabilities of the generated {@link ApiClient}
@@ -86,7 +87,15 @@ public class EnhancedApiClient {
             } catch (IOException e) {
                 return defaultDecoder.decode(methodKey, response);
             }
-            return new BaseException(errorResponse.getCode(), errorResponse.getMessage());
+            String message = errorResponse.getMessage();
+            if (errorResponse.getInvalidRequestParameters() != null
+                    && !errorResponse.getInvalidRequestParameters().isEmpty()) {
+                message += ": " + errorResponse.getInvalidRequestParameters()
+                                               .stream()
+                                               .map(p -> p.getName() + " " + p.getMessage())
+                                               .collect(Collectors.joining("; "));
+            }
+            return new BaseException(errorResponse.getCode(), message);
         }
     }
 }

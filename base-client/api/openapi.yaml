@@ -5,7 +5,7 @@ info:
 
      Following [semantic versioning](https://semver.org/).
   title: Base App API
-  version: 0.4.0
+  version: 0.4.2
 servers:
   - description: Generated server url
     url: http://localhost:8080
@@ -435,6 +435,8 @@ components:
 
           * 3 - Old password does not match
 
+          * 4 - Invalid request format
+
         * 404:
 
           * 1 - User not found
@@ -450,6 +452,7 @@ components:
             - 1
             - 2
             - 3
+            - 4
           format: int32
           type: integer
           x-enum-varnames:
@@ -457,15 +460,37 @@ components:
             - USER_NOT_FOUND
             - EMAIL_ALREADY_EXISTS
             - OLD_PASSWORD_DOES_NOT_MATCH
+            - INVALID_REQUEST
           x-enum-descriptions:
             - Internal error
             - User not found
             - Email already exists
             - Old password does not match
+            - Invalid request format
         message:
           type: string
+        invalidRequestParameters:
+          description: May be present when the code is 4
+          items:
+            $ref: '#/components/schemas/InvalidRequestParameter'
+          type: array
+      required:
+        - code
+        - message
+      type: object
+    InvalidRequestParameter:
+      description: May be present when the code is 4
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+      required:
+        - message
+        - name
       type: object
     ChangeUserDto:
+      description: at least one field must be present
       example:
         firstName: firstName
         lastName: lastName
@@ -484,6 +509,9 @@ components:
           type: string
         newPassword:
           type: string
+      required:
+        - newPassword
+        - oldPassword
       type: object
     CreateUserDto:
       example:
@@ -500,6 +528,11 @@ components:
           type: string
         password:
           type: string
+      required:
+        - email
+        - firstName
+        - lastName
+        - password
       type: object
     CredentialsDto:
       example:
@@ -510,6 +543,9 @@ components:
           type: string
         password:
           type: string
+      required:
+        - email
+        - password
       type: object
     JwtDto:
       example:
@@ -517,6 +553,8 @@ components:
       properties:
         jwt:
           type: string
+      required:
+        - jwt
       type: object
     GetUserDto:
       example:
@@ -530,6 +568,10 @@ components:
           type: string
         lastName:
           type: string
+      required:
+        - email
+        - firstName
+        - lastName
       type: object
   securitySchemes:
     jwt:

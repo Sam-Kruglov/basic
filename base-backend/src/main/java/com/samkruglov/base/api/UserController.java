@@ -10,6 +10,7 @@ import com.samkruglov.base.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,10 +20,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Tag(name = "users")
+@Validated
 public class UserController {
 
     public static final String CREATE_USER_OP_ID = "create-user";
@@ -32,7 +37,7 @@ public class UserController {
 
     @Operation(operationId = CREATE_USER_OP_ID)
     @PostMapping
-    public void createUser(@RequestBody CreateUserDto userDto) {
+    public void createUser(@Valid @RequestBody CreateUserDto userDto) {
         service.create(userDto);
     }
 
@@ -42,22 +47,22 @@ public class UserController {
     }
 
     @GetMapping("/{email}")
-    public GetUserDto getUser(@PathVariable String email) {
+    public GetUserDto getUser(@Email @PathVariable String email) {
         return mapper.toGetUserDto(service.getByEmail(email));
     }
 
     @PutMapping("/self")
-    public void changeMe(@Current User user, @RequestBody ChangeUserDto changeDto) {
+    public void changeMe(@Current User user, @Valid @RequestBody ChangeUserDto changeDto) {
         service.change(user, changeDto);
     }
 
     @PutMapping("/{email}")
-    public void changeUser(@PathVariable String email, @RequestBody ChangeUserDto changeDto) {
+    public void changeUser(@Email @PathVariable String email, @Valid @RequestBody ChangeUserDto changeDto) {
         service.changeByEmail(email, changeDto);
     }
 
     @DeleteMapping("/{email}")
-    public void removeUser(@PathVariable String email) {
+    public void removeUser(@Email @PathVariable String email) {
         service.deleteByEmail(email);
     }
 

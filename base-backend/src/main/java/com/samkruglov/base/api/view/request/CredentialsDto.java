@@ -2,8 +2,11 @@ package com.samkruglov.base.api.view.request;
 
 import lombok.Value;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 @Value
 public class CredentialsDto {
-    String email;
-    String password;
+    @NotBlank @Email String email;
+    @NotBlank        String password;
 }

@@ -1,10 +1,17 @@
 package com.samkruglov.base.api.view.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.NonNull;
 import lombok.Value;
 
 @Value
 public class GetUserDto {
-    String email;
-    String firstName;
-    String lastName;
+    @Schema(required = true)
+    @NonNull String email;
+
+    @Schema(required = true)
+    @NonNull String firstName;
+
+    @Schema(required = true)
+    @NonNull String lastName;
 }
