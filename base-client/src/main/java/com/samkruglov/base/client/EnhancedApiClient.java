@@ -26,7 +26,6 @@ public class EnhancedApiClient {
         apiClient = new ApiClient("jwt");
         apiClient.setBasePath(basePath);
         getFeignBuilder().logLevel(logLevel)
-                         .decode404()
                          .errorDecoder(new BaseErrorDecoder(getObjectMapper()));
     }
 
