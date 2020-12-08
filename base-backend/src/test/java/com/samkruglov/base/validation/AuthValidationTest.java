@@ -1,4 +1,4 @@
-package com.samkruglov.base;
+package com.samkruglov.base.validation;
 
 import com.samkruglov.base.api.AuthController;
 import com.samkruglov.base.api.view.request.ChangePasswordDto;

@@ -107,6 +107,12 @@ public class ValidationTest {
         });
     }
 
+    protected void sendAndAssertValid(
+            Function<WebTestClient, WebTestClient.ResponseSpec> sender
+    ) {
+        sender.apply(webTestClient).expectStatus().is2xxSuccessful();
+    }
+
     private void sendAndAssert(
             Function<WebTestClient, WebTestClient.ResponseSpec> sender,
             BiConsumer<SoftAssertions, ErrorResponse> asserter

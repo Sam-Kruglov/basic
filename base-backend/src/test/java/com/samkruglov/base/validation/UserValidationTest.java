@@ -1,4 +1,4 @@
-package com.samkruglov.base;
+package com.samkruglov.base.validation;
 
 import com.samkruglov.base.api.UserController;
 import com.samkruglov.base.api.view.mapper.UserMapper;
@@ -64,7 +64,7 @@ public class UserValidationTest extends ValidationTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        @MethodSource("com.samkruglov.base.UserValidationTest#very_long_name_factory")
+        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
         void invalid_first_and_last_name(String invalidName) {
             firstName = invalidName;
             lastName = invalidName;
@@ -122,7 +122,7 @@ public class UserValidationTest extends ValidationTest {
 
         @ParameterizedTest
         @EmptySource
-        @MethodSource("com.samkruglov.base.UserValidationTest#very_long_name_factory")
+        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
         void invalid_first_and_last_name(String invalidName) {
             firstName = invalidName;
             lastName = invalidName;
@@ -134,6 +134,18 @@ public class UserValidationTest extends ValidationTest {
             firstName = null;
             lastName = null;
             sendAndAssertMessage(changeMe, "must not be null", "firstName", "lastName");
+        }
+
+        @Test
+        void allowed_missing_first_name() {
+            firstName = null;
+            sendAndAssertValid(changeMe);
+        }
+
+        @Test
+        void allowed_missing_last_name() {
+            lastName = null;
+            sendAndAssertValid(changeMe);
         }
     }
 
@@ -165,7 +177,7 @@ public class UserValidationTest extends ValidationTest {
 
         @ParameterizedTest
         @EmptySource
-        @MethodSource("com.samkruglov.base.UserValidationTest#very_long_name_factory")
+        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
         void invalid_first_and_last_name(String invalidName) {
             firstName = invalidName;
             lastName = invalidName;
@@ -177,6 +189,18 @@ public class UserValidationTest extends ValidationTest {
             firstName = null;
             lastName = null;
             sendAndAssertMessage(changeUser, "must not be null", "firstName", "lastName");
+        }
+
+        @Test
+        void allowed_missing_first_name() {
+            firstName = null;
+            sendAndAssertValid(changeUser);
+        }
+
+        @Test
+        void allowed_missing_last_name() {
+            lastName = null;
+            sendAndAssertValid(changeUser);
         }
     }
 
