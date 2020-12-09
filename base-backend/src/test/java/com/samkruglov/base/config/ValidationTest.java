@@ -26,6 +26,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -71,11 +72,12 @@ public class ValidationTest {
 
     @BeforeEach
     void stubSecurityContext() {
+        //noinspection deprecation -- NoOpPasswordEncoder is fine for tests
         val user = new User(
                 "john",
                 "smith",
                 "john.smith@company.com",
-                "{noop}pw",
+                NoOpPasswordEncoder.getInstance().encode("pw"),
                 List.of(new Role(1, Roles.ADMIN), new Role(2, Roles.USER))
         );
         Authentication auth = new TestingAuthenticationToken(new SecurityConfig.CustomUser(user), null);

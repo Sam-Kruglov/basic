@@ -1,14 +1,18 @@
 package com.samkruglov.base.api.config.error;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.samkruglov.base.service.error.BaseErrorType;
 import com.samkruglov.base.service.error.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
@@ -17,15 +21,19 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 @ControllerAdvice
@@ -57,6 +65,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     ResponseEntity<?> validation(ConstraintViolationException e) {
         if (CollectionUtils.isEmpty(e.getConstraintViolations())) {
+            log.error("no constraint violations found");
             return unexpected(e);
         }
         val methodOwnerClass = e.getConstraintViolations().iterator().next().getRootBeanClass();
@@ -70,6 +79,51 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 e.getConstraintViolations().stream()
                  .map(v -> new InvalidRequestParameter(getLast(v.getPropertyPath()).getName(), v.getMessage()))
         );
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request
+    ) {
+        if (ex.getCause() != null && MismatchedInputException.class.isAssignableFrom(ex.getCause().getClass())) {
+            val mismatchedInputException = ((MismatchedInputException) ex.getCause());
+            val propertyPath = mismatchedInputException.getPath()
+                                                       .stream()
+                                                       .map(JsonMappingException.Reference::getFieldName)
+                                                       .collect(joining("."));
+            return wrongType(propertyPath);
+        }
+        return unexpected(ex);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(
+            TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request
+    ) {
+        String propertyName;
+        if (ex.getPropertyName() != null) {
+            //some subtypes of this exception don't populate this field
+            propertyName = ex.getPropertyName();
+        } else if (ex instanceof MethodArgumentTypeMismatchException) {
+            propertyName = ((MethodArgumentTypeMismatchException) ex).getName();
+        } else {
+            return unexpected(ex);
+        }
+        return wrongType(propertyName);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingPathVariable(
+            MissingPathVariableException ex, HttpHeaders headers, HttpStatus status, WebRequest request
+    ) {
+        return buildValidationResponse(ex.getVariableName(), "missing path parameter");
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request
+    ) {
+        return buildValidationResponse(ex.getParameterName(), "missing request parameter");
     }
 
     @Override
@@ -97,15 +151,24 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> unexpected(Exception e) {
+    public ResponseEntity<Object> unexpected(Exception e) {
         log.error(e.getMessage(), e);
         val errorType = BaseErrorType.INTERNAL_ERROR;
         return ResponseEntity.status(errorType.httpStatusCode)
                              .body(new ErrorResponse(errorType.errorCode, errorType.description));
     }
 
-    //there are other potential client exceptions that are handled in parent class but aren't relevant with the current API,
-    // like missing path/request parameter or wrong type.
+    private ResponseEntity<Object> wrongType(String propertyPath) {
+        return buildValidationResponse(propertyPath, "value of this type is not allowed");
+    }
+
+    private ResponseEntity<Object> buildValidationResponse(String parameterName, String message) {
+        return buildValidationResponse(
+                Optional.empty(),
+                Stream.of(new InvalidRequestParameter(parameterName, message))
+        );
+    }
+
     private ResponseEntity<Object> buildValidationResponse(
             Optional<String> messageOpt,
             Stream<InvalidRequestParameter> parameterStream
