@@ -18,10 +18,8 @@ public class NaturalRepositoryImpl<T, ID extends Serializable>
     private final EntityManager entityManager;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public NaturalRepositoryImpl(JpaEntityInformation<T, ?> entityInformation,
-                                 EntityManager entityManager) {
+    public NaturalRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
-
         this.entityManager = entityManager;
     }
 
@@ -38,5 +36,4 @@ public class NaturalRepositoryImpl<T, ID extends Serializable>
         naturalIds.forEach(loadAccess::using);
         return loadAccess.loadOptional();
     }
-
 }
