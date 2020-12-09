@@ -9,7 +9,6 @@ import com.samkruglov.base.repo.RoleRepo;
 import com.samkruglov.base.repo.UserRepo;
 import com.samkruglov.base.service.error.BaseException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -26,7 +25,6 @@ import static com.samkruglov.base.service.error.BaseErrorType.USER_NOT_FOUND;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserService {
 
     private final UserRepo repo;
