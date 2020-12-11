@@ -7,6 +7,7 @@ import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.util.RefUtils;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Content;
@@ -14,12 +15,14 @@ import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
+import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
@@ -32,12 +35,14 @@ import org.springframework.http.HttpStatus;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP;
 import static java.lang.String.format;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -184,6 +189,42 @@ public class OpenApiConfig {
             }
             return operation;
         };
+    }
+
+    /**
+     * Sorting everything to get a predictable output every time for easier version control.
+     */
+    static class SpecSortingConfig {
+
+        @Bean
+        public OpenApiCustomiser pathSortingApiCustomizer() {
+            return openAPI -> {
+                val sortedPaths = new Paths();
+                sortedPaths.setExtensions(openAPI.getPaths().getExtensions());
+                sortedPaths.putAll(new TreeMap<>(openAPI.getPaths()));
+                openAPI.setPaths(sortedPaths);
+            };
+        }
+
+        @Bean
+        public OperationCustomizer parameterSortingOperationCustomizer() {
+            return (operation, handlerMethod) -> {
+                if (operation.getParameters() != null) {
+                    operation.getParameters().sort(comparing(Parameter::getName));
+                }
+                return operation;
+            };
+        }
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        @Bean
+        public OpenApiCustomiser propertySortingSchemaCustomizer() {
+            return openApi -> openApi.getComponents().getSchemas().values().forEach(schema -> {
+                if (schema != null && schema.getProperties() != null) {
+                    schema.setProperties(new TreeMap<>(schema.getProperties()));
+                }
+            });
+        }
     }
 
     @lombok.Value
