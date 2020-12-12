@@ -28,6 +28,7 @@ public class ClientErrorHandlingIntegrationTest extends IntegrationTest {
 
         @BeforeAll
         void setUp() {
+            clearDatabase();
             userFactory.saveAdmin(email);
             login(email);
             usersApi = apiClient.buildClient(UsersApi.class);
