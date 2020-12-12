@@ -6,10 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Value;
 
 @Value
-@AnyNotNull({"firstName", "lastName"})
+@AnyNotNull
 @Schema(description = "at least one field must be present")
 public class ChangeUserDto {
     @UserFirstOrSecondName String firstName;
-
     @UserFirstOrSecondName String lastName;
 }

@@ -19,9 +19,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface AnyNotNull {
 
     /**
-     * Property names
+     * Property names. Selects all by default.
      */
-    String[] value();
+    String[] value() default {};
 
     String message() default "at least one field must not be null: {value}";
 

@@ -12,7 +12,7 @@
 
     <groupId>com.samkruglov</groupId>
     <artifactId>base-backend</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>
         Responsible for managing users and roles.
 
