@@ -164,6 +164,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>with-desc</id>
                         <goals>
                             <goal>build-info</goal>
                         </goals>
