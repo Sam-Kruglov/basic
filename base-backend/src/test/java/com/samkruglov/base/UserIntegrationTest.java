@@ -4,6 +4,7 @@ import com.samkruglov.base.client.gen.api.UsersApi;
 import com.samkruglov.base.client.gen.view.ChangeUserDto;
 import com.samkruglov.base.client.gen.view.CreateUserDto;
 import com.samkruglov.base.config.IntegrationTest;
+import com.samkruglov.base.config.UserTestFactory;
 import lombok.val;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -15,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static com.samkruglov.base.config.TestUtil.assertNoPermissionTo;
-import static com.samkruglov.base.config.TestUtil.assertThatUnauthorized;
+import static com.samkruglov.base.config.TestUtil.Client.assertNoPermissionTo;
+import static com.samkruglov.base.config.TestUtil.Client.assertThatUnauthorized;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
@@ -25,10 +26,9 @@ class UserIntegrationTest extends IntegrationTest {
     UsersApi usersApi;
 
     String email = "john.smith@company.com";
-    String password = "js";
 
     void login() {
-        apiClient.authenticate(email, password);
+        login(email);
     }
 
     @BeforeAll
@@ -50,7 +50,7 @@ class UserIntegrationTest extends IntegrationTest {
         void create_user_and_login() {
             val createUserDto = new CreateUserDto()
                     .email(email)
-                    .password(password)
+                    .password(UserTestFactory.PASSWORD)
                     .firstName("john")
                     .lastName("smith");
             usersApi.createUser(createUserDto);
@@ -83,7 +83,7 @@ class UserIntegrationTest extends IntegrationTest {
         @BeforeAll
         void setUp() {
             clearDatabase();
-            userFactory.createUser(email, password);
+            userFactory.saveUser(email);
             login();
         }
 
@@ -103,11 +103,10 @@ class UserIntegrationTest extends IntegrationTest {
         @Nested
         class given_another_user_2 {
             String email2 = "mike.gordon@company.com";
-            String password2 = "mg";
 
             @BeforeAll
             void setUp() {
-                userFactory.createUser(email2, password2);
+                userFactory.saveUser(email2);
             }
 
             @Test
@@ -133,7 +132,7 @@ class UserIntegrationTest extends IntegrationTest {
         @BeforeAll
         void setUp() {
             clearDatabase();
-            userFactory.createAdmin(email, password);
+            userFactory.saveAdmin(email);
             login();
         }
 
@@ -157,11 +156,10 @@ class UserIntegrationTest extends IntegrationTest {
         @TestMethodOrder(OrderAnnotation.class)
         class given_another_user_2 {
             String email2 = "rob.wilson@company.com";
-            String password2 = "rw";
 
             @BeforeAll
             void setUp() {
-                userFactory.createUser(email2, password2);
+                userFactory.saveUser(email2);
             }
 
             @Order(1)
@@ -188,11 +186,10 @@ class UserIntegrationTest extends IntegrationTest {
         @TestMethodOrder(OrderAnnotation.class)
         class given_another_admin_2 {
             String email2 = "mike.gordon@company.com";
-            String password2 = "mg";
 
             @BeforeAll
             void setUp() {
-                userFactory.createAdmin(email2, password2);
+                userFactory.saveAdmin(email2);
             }
 
             @Order(1)

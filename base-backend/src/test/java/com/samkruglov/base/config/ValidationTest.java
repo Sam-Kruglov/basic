@@ -3,8 +3,6 @@ package com.samkruglov.base.config;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.samkruglov.base.api.config.error.ErrorResponse;
 import com.samkruglov.base.api.config.error.InvalidRequestParameter;
-import com.samkruglov.base.domain.Role;
-import com.samkruglov.base.domain.User;
 import com.samkruglov.base.service.error.BaseErrorType;
 import lombok.val;
 import org.assertj.core.api.SoftAssertions;
@@ -26,14 +24,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -72,14 +68,7 @@ public class ValidationTest {
 
     @BeforeEach
     void stubSecurityContext() {
-        //noinspection deprecation -- NoOpPasswordEncoder is fine for tests
-        val user = new User(
-                "john",
-                "smith",
-                "john.smith@company.com",
-                NoOpPasswordEncoder.getInstance().encode("pw"),
-                List.of(new Role(1, Roles.ADMIN), new Role(2, Roles.USER))
-        );
+        val user = UserTestFactory.createUser("john.smith@company.com");
         Authentication auth = new TestingAuthenticationToken(new SecurityConfig.CustomUser(user), null);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }

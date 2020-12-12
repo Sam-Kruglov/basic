@@ -42,6 +42,10 @@ public class IntegrationTest {
         logout();
     }
 
+    protected void login(String email) {
+        apiClient.authenticate(email, UserTestFactory.PASSWORD);
+    }
+
     protected void logout() {
         apiClient.setBearerToken(null);
     }

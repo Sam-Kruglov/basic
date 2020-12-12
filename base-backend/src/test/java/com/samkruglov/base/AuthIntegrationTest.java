@@ -3,23 +3,23 @@ package com.samkruglov.base;
 import com.samkruglov.base.client.gen.api.AuthApi;
 import com.samkruglov.base.client.gen.view.ChangePasswordDto;
 import com.samkruglov.base.config.IntegrationTest;
+import com.samkruglov.base.config.UserTestFactory;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.samkruglov.base.config.TestUtil.assertThatUnauthorized;
+import static com.samkruglov.base.config.TestUtil.Client.assertThatUnauthorized;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @SuppressWarnings("Convert2MethodRef")
 public class AuthIntegrationTest extends IntegrationTest {
 
-    String email = "john.smith@company.com";
-    String password = "js";
+    String  email = "john.smith@company.com";
     AuthApi authApi;
 
-    void authenticate() {
-        apiClient.authenticate(email, password);
+    void login() {
+        login(email);
     }
 
     @BeforeAll
@@ -29,7 +29,7 @@ public class AuthIntegrationTest extends IntegrationTest {
 
     @Test
     void try_wrong_credentials__return_401() {
-        assertThatUnauthorized().isThrownBy(() -> authenticate());
+        assertThatUnauthorized().isThrownBy(() -> login());
     }
 
     @Nested
@@ -38,12 +38,12 @@ public class AuthIntegrationTest extends IntegrationTest {
         @BeforeAll
         void setUp() {
             clearDatabase();
-            userFactory.createUser(email, password);
+            userFactory.saveUser(email);
         }
 
         @Test
         void login__success() {
-            assertThatNoException().isThrownBy(() -> authenticate());
+            assertThatNoException().isThrownBy(() -> login());
         }
 
         @Nested
@@ -51,16 +51,16 @@ public class AuthIntegrationTest extends IntegrationTest {
 
             @BeforeAll
             void setUp() {
-                authenticate();
+                login();
             }
 
             @Test
             void change_password__success() {
                 assertThatNoException().isThrownBy(() -> {
-                    val newPassword = password + "1";
-                    authApi.changePassword(new ChangePasswordDto().oldPassword(password).newPassword(newPassword));
-                    password = newPassword;
-                    authenticate();
+                    val oldPassword = UserTestFactory.PASSWORD;
+                    val newPassword = oldPassword + "1";
+                    authApi.changePassword(new ChangePasswordDto().oldPassword(oldPassword).newPassword(newPassword));
+                    apiClient.authenticate(email, newPassword);
                 });
             }
         }

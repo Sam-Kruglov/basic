@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.samkruglov.base.client.gen.view.ErrorResponse.CodeEnum.INVALID_REQUEST;
 import static com.samkruglov.base.client.gen.view.ErrorResponse.CodeEnum.USER_NOT_FOUND;
-import static com.samkruglov.base.config.TestUtil.assertThatBaseException;
+import static com.samkruglov.base.config.TestUtil.Client.assertThatBaseException;
 
 public class ClientErrorHandlingIntegrationTest extends IntegrationTest {
 
@@ -24,13 +24,12 @@ public class ClientErrorHandlingIntegrationTest extends IntegrationTest {
     class given_authenticated_admin {
 
         String   email    = "john.smith@company.com";
-        String   password = "js";
         UsersApi usersApi;
 
         @BeforeAll
         void setUp() {
-            userFactory.createAdmin(email, password);
-            apiClient.authenticate(email, password);
+            userFactory.saveAdmin(email);
+            login(email);
             usersApi = apiClient.buildClient(UsersApi.class);
         }
 
