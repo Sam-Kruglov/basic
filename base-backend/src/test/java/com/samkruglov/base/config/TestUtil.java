@@ -11,9 +11,16 @@ import org.assertj.core.api.ThrowableAssertAlternative;
 import org.assertj.core.api.ThrowableTypeAssert;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestUtil {
+
+    public static <T> T withProperty(String property, Object value) {
+        return argThat(hasProperty(property, is(value)));
+    }
 
     public static ThrowableTypeAssert<BaseException> assertThatBaseException(BaseErrorType type) {
         return new BaseExceptionThrowableTypeAssert(type);
