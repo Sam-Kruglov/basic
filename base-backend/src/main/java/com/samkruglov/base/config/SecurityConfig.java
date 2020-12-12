@@ -26,7 +26,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -51,6 +50,7 @@ import java.util.Map;
 import static com.samkruglov.base.config.Roles.ADMIN;
 import static com.samkruglov.base.config.Roles.USER;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
@@ -90,7 +90,7 @@ public class SecurityConfig {
                     // JWT based authentication does not use cookies hence CSRF is impossible
                     .csrf().disable()
                     .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(STATELESS)
                         .and()
                     .authorizeRequests()
                         // /open-api doesn't exist in production
