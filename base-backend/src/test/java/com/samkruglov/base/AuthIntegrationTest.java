@@ -6,8 +6,11 @@ import com.samkruglov.base.config.IntegrationTest;
 import com.samkruglov.base.config.UserTestFactory;
 import lombok.val;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import static com.samkruglov.base.config.TestUtil.Client.assertThatUnauthorized;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -48,7 +51,10 @@ public class AuthIntegrationTest extends IntegrationTest {
         }
 
         @Nested
+        @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
         class given_authenticated {
+
+            String newPassword;
 
             @BeforeAll
             void setUp() {
@@ -56,13 +62,20 @@ public class AuthIntegrationTest extends IntegrationTest {
             }
 
             @Test
+            @Order(1)
             void change_password__success() {
                 assertThatNoException().isThrownBy(() -> {
                     val oldPassword = UserTestFactory.PASSWORD;
-                    val newPassword = oldPassword + "1";
+                    newPassword = oldPassword + "1";
                     authApi.changePassword(new ChangePasswordDto().oldPassword(oldPassword).newPassword(newPassword));
                     apiClient.authenticate(email, newPassword);
                 });
+            }
+
+            @Test
+            @Order(2)
+            void login_with_new_password__success() {
+                assertThatNoException().isThrownBy(() -> apiClient.authenticate(email, newPassword));
             }
         }
     }
