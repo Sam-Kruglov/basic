@@ -13,6 +13,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
+import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
+
 @Import(AuthController.class)
 public class AuthValidationTest extends ValidationTest {
 
@@ -74,7 +76,7 @@ public class AuthValidationTest extends ValidationTest {
         void changePassword(String... expectedInvalidFields) {
             sendAndAssertFields(
                     client -> client.put()
-                                    .uri("/api/auth/users/self/change-password")
+                                    .uri("/api/auth/users/"+ SELF +"/change-password")
                                     .bodyValue(new ChangePasswordDto(oldPassword, newPassword))
                                     .exchange(),
                     expectedInvalidFields

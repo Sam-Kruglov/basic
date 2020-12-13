@@ -1,8 +1,10 @@
 package com.samkruglov.base.config;
 
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.samkruglov.base.api.config.ReferredUserConfig;
 import com.samkruglov.base.api.config.error.ErrorResponse;
 import com.samkruglov.base.api.config.error.InvalidRequestParameter;
+import com.samkruglov.base.repo.UserRepo;
 import com.samkruglov.base.service.error.BaseErrorType;
 import lombok.val;
 import org.assertj.core.api.SoftAssertions;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -30,10 +33,13 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
 /**
  * @implSpec use {@code @Import(SomeController.class)} for each test
@@ -50,15 +56,16 @@ import static org.assertj.core.api.Assertions.assertThat;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Controller.class)
         }
 )
-@Import(ValidationTest.InsecureConfig.class)
+@Import({ValidationTest.InsecureConfig.class, ReferredUserConfig.class})
 @ActiveProfiles("test")
 public class ValidationTest {
 
-    private WebTestClient webTestClient;
+    protected           WebTestClient webTestClient;
+    @MockBean protected UserRepo      userRepo;
 
     //todo check up on https://github.com/spring-projects/spring-boot/issues/23067
     @BeforeAll
-    void setUp(@Autowired MockMvc mockMvc) {
+    void setUpForAll(@Autowired MockMvc mockMvc) {
         webTestClient = MockMvcWebTestClient.bindTo(mockMvc)
                                             .codecs(c -> c.customCodecs().register(new Jackson2JsonDecoder(
                                                     Jackson2ObjectMapperBuilder.json().modules(new ParameterNamesModule()).build()
@@ -67,7 +74,10 @@ public class ValidationTest {
     }
 
     @BeforeEach
-    void stubSecurityContext() {
+    void setUpForEach() {
+        given(userRepo.findByEmail(anyString()))
+                .willAnswer(invocation -> Optional.of(UserTestFactory.createUser(invocation.getArgument(0))));
+        given(userRepo.getByEmail(anyString())).willCallRealMethod();
         val user = UserTestFactory.createUser("john.smith@company.com");
         Authentication auth = new TestingAuthenticationToken(new SecurityConfig.CustomUser(user), null);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -111,13 +121,10 @@ public class ValidationTest {
         sender.apply(webTestClient)
               .expectStatus().isBadRequest()
               .expectBody(ErrorResponse.class)
-              .consumeWith(res -> {
-                  val response = res.getResponseBody();
-                  SoftAssertions.assertSoftly(softly -> {
-                      softly.assertThat(response.getCode()).isEqualTo(BaseErrorType.INVALID_REQUEST.errorCode);
-                      asserter.accept(softly, response);
-                  });
-              });
+              .value(response -> SoftAssertions.assertSoftly(softly -> {
+                  softly.assertThat(response.getCode()).isEqualTo(BaseErrorType.INVALID_REQUEST.errorCode);
+                  asserter.accept(softly, response);
+              }));
     }
 
     @TestConfiguration

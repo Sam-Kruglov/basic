@@ -10,14 +10,12 @@ import com.samkruglov.base.repo.UserRepo;
 import com.samkruglov.base.service.error.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.samkruglov.base.service.error.BaseErrorType.EMAIL_ALREADY_EXISTS;
-import static com.samkruglov.base.service.error.BaseErrorType.USER_NOT_FOUND;
 
 /**
  * @implNote there is an abstraction {@link UserDetailsManager} that may be useful in the future Spring releases.
@@ -39,15 +37,6 @@ public class UserService {
         repo.save(mapper.toUser(dto, List.of(userRole)));
     }
 
-    public User getByEmail(String email) {
-        return repo.findByEmail(email).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
-    }
-
-    @PreAuthorize("not this.getByEmail(#email).hasRole(@roles.ADMIN)")
-    public void deleteByEmail(String email) {
-        delete(getByEmail(email));
-    }
-
     public void delete(User user) {
         repo.delete(user);
     }
@@ -55,10 +44,5 @@ public class UserService {
     public void change(User user, ChangeUserDto changeDto) {
         mapper.updateUser(user, changeDto);
         repo.save(user);
-    }
-
-    @PreAuthorize("not this.getByEmail(#email).hasRole(@roles.ADMIN)")
-    public void changeByEmail(String email, ChangeUserDto changeDto) {
-        change(getByEmail(email), changeDto);
     }
 }

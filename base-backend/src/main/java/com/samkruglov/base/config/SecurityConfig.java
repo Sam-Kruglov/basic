@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
 import static com.samkruglov.base.config.Roles.ADMIN;
 import static com.samkruglov.base.config.Roles.USER;
 import static java.util.stream.Collectors.toList;
@@ -101,8 +102,8 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.POST, "/api/users")
                             .access("not authenticated or hasRole(@roles.ADMIN)")
                         //admin users can only be removed manually directly from the database
-                        .antMatchers(HttpMethod.DELETE, "/api/users/self").not().hasRole(ADMIN)
-                        .antMatchers("/api/**/self/**").authenticated()
+                        .antMatchers(HttpMethod.DELETE, "/api/users/" + SELF).not().hasRole(ADMIN)
+                        .antMatchers("/api/**/" + SELF + "/**").authenticated()
                         .anyRequest().hasRole(ADMIN)
                         .and()
                     .oauth2ResourceServer()

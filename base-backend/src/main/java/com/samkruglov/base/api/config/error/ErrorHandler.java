@@ -2,10 +2,12 @@ package com.samkruglov.base.api.config.error;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.samkruglov.base.api.config.ReferredUserConfig;
 import com.samkruglov.base.service.error.BaseErrorType;
 import com.samkruglov.base.service.error.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -41,7 +43,7 @@ import static java.util.stream.Collectors.toList;
 public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> expected(BaseException e) {
+    public ResponseEntity<Object> expected(BaseException e) {
         val errorType = e.getErrorType();
         val message = createMessage(e, errorType);
         log.debug(message);
@@ -63,15 +65,16 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
      */
     //todo check up on https://github.com/spring-projects/spring-framework/issues/26219
     @ExceptionHandler
-    ResponseEntity<?> validation(ConstraintViolationException e) {
+    ResponseEntity<Object> validation(ConstraintViolationException e) {
         if (CollectionUtils.isEmpty(e.getConstraintViolations())) {
             log.error("no constraint violations found");
             return unexpected(e);
         }
-        val methodOwnerClass = e.getConstraintViolations().iterator().next().getRootBeanClass();
+        val methodOrFieldOwnerClass = e.getConstraintViolations().iterator().next().getRootBeanClass();
         //if this doesn't comes from a controller parameter, then it's not related to API,
         // so it would be a server error instead of a client error.
-        if (!AnnotatedElementUtils.hasAnnotation(methodOwnerClass, Controller.class)) {
+        if (!methodOrFieldOwnerClass.isNestmateOf(ReferredUserConfig.class)
+                && !AnnotatedElementUtils.hasAnnotation(methodOrFieldOwnerClass, Controller.class)) {
             return unexpected(e);
         }
         return buildValidationResponse(
@@ -100,6 +103,14 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(
             TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request
     ) {
+        val rootCause = ExceptionUtils.getRootCause(ex);
+        // there may be exceptions thrown in our own custom type converters
+        if (rootCause instanceof ConstraintViolationException) {
+            return validation(((ConstraintViolationException) rootCause));
+        }
+        if (rootCause instanceof BaseException) {
+            return expected(((BaseException) rootCause));
+        }
         String propertyName;
         if (ex.getPropertyName() != null) {
             //some subtypes of this exception don't populate this field

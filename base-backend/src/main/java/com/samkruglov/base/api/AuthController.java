@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
+
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "auth")
@@ -33,7 +35,7 @@ public class AuthController {
         return new JwtDto(service.login(credentials).serialize());
     }
 
-    @PutMapping("/users/self/change-password")
+    @PutMapping("/users/" + SELF + "/change-password")
     public void changeMyPassword(@Current User user, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
         service.changePassword(user, changePasswordDto);
     }

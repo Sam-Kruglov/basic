@@ -23,6 +23,9 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.samkruglov.base.api.config.UserUrlPathId.BY_EMAIL;
+import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
+
 @Import(UserController.class)
 public class UserValidationTest extends ValidationTest {
 
@@ -91,7 +94,7 @@ public class UserValidationTest extends ValidationTest {
 
         void getUser(String... expectedInvalidFields) {
             sendAndAssertFields(
-                    client -> client.get().uri("/api/users/{email}", email).exchange(),
+                    client -> client.get().uri("/api/users/" + BY_EMAIL, email).exchange(),
                     expectedInvalidFields
             );
         }
@@ -103,130 +106,77 @@ public class UserValidationTest extends ValidationTest {
         }
     }
 
+    abstract class abstract_change {
+        protected String firstName;
+        protected String lastName;
+
+        protected Function<WebTestClient, WebTestClient.ResponseSpec> changeSender = buildSender();
+
+        abstract Function<WebTestClient, WebTestClient.ResponseSpec> buildSender();
+
+        protected Function<WebTestClient, WebTestClient.ResponseSpec> buildSender(String uri, Object... params) {
+            return client -> client.put()
+                                   .uri(uri, params)
+                                   .bodyValue(new ChangeUserDto(firstName, lastName))
+                                   .exchange();
+        }
+
+        @BeforeEach
+        void setUp() {
+            firstName = "john";
+            lastName = "smith";
+        }
+
+        @ParameterizedTest
+        @EmptySource
+        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
+        void invalid_first_and_last_name(String invalidName) {
+            firstName = invalidName;
+            lastName = invalidName;
+            sendAndAssertFields(changeSender, "firstName", "lastName");
+        }
+
+        @Test
+        void missing_both_first_and_last_name() {
+            firstName = null;
+            lastName = null;
+            sendAndAssertMessage(changeSender, "must not be null", "firstName", "lastName");
+        }
+
+        @Test
+        void allowed_missing_first_name() {
+            firstName = null;
+            sendAndAssertValid(changeSender);
+        }
+
+        @Test
+        void allowed_missing_last_name() {
+            lastName = null;
+            sendAndAssertValid(changeSender);
+        }
+    }
+
     @Nested
-    class change_me {
-        String firstName;
-        String lastName;
+    class change_me extends abstract_change {
+
+        @Override
+        Function<WebTestClient, WebTestClient.ResponseSpec> buildSender() {
+            return buildSender("/api/users/" + SELF);
+        }
 
         Function<WebTestClient, WebTestClient.ResponseSpec> changeMe =
                 client -> client.put()
-                                .uri("/api/users/self")
+                                .uri("/api/users/" + SELF)
                                 .bodyValue(new ChangeUserDto(firstName, lastName))
                                 .exchange();
-
-        @BeforeEach
-        void setUp() {
-            firstName = "john";
-            lastName = "smith";
-        }
-
-        @ParameterizedTest
-        @EmptySource
-        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
-        void invalid_first_and_last_name(String invalidName) {
-            firstName = invalidName;
-            lastName = invalidName;
-            sendAndAssertFields(changeMe, "firstName", "lastName");
-        }
-
-        @Test
-        void missing_both_first_and_last_name() {
-            firstName = null;
-            lastName = null;
-            sendAndAssertMessage(changeMe, "must not be null", "firstName", "lastName");
-        }
-
-        @Test
-        void allowed_missing_first_name() {
-            firstName = null;
-            sendAndAssertValid(changeMe);
-        }
-
-        @Test
-        void allowed_missing_last_name() {
-            lastName = null;
-            sendAndAssertValid(changeMe);
-        }
     }
 
     @Nested
-    class change_user {
+    class change_user extends abstract_change {
 
-        String firstName;
-        String lastName;
-        String email;
-
-        Function<WebTestClient, WebTestClient.ResponseSpec> changeUser =
-                client -> client.put()
-                                .uri("/api/users/{email}", email)
-                                .bodyValue(new ChangeUserDto(firstName, lastName))
-                                .exchange();
-
-        @BeforeEach
-        void setUp() {
-            firstName = "john";
-            lastName = "smith";
-            email = "john.smith@company.com";
-        }
-
-        @Test
-        void invalid_email() {
-            email = "invalid";
-            sendAndAssertFields(changeUser, "email");
-        }
-
-        @ParameterizedTest
-        @EmptySource
-        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
-        void invalid_first_and_last_name(String invalidName) {
-            firstName = invalidName;
-            lastName = invalidName;
-            sendAndAssertFields(changeUser, "firstName", "lastName");
-        }
-
-        @Test
-        void missing_both_first_and_last_name() {
-            firstName = null;
-            lastName = null;
-            sendAndAssertMessage(changeUser, "must not be null", "firstName", "lastName");
-        }
-
-        @Test
-        void allowed_missing_first_name() {
-            firstName = null;
-            sendAndAssertValid(changeUser);
-        }
-
-        @Test
-        void allowed_missing_last_name() {
-            lastName = null;
-            sendAndAssertValid(changeUser);
-        }
-    }
-
-    @Nested
-    class remove_user {
-
-        String email;
-
-        @BeforeEach
-        void setUp() {
-            email = "john.smith@company.com";
-        }
-
-        void removeUser(String... expectedInvalidFields) {
-            sendAndAssertFields(
-                    client -> client.delete()
-                                    .uri("/api/users/{email}", email)
-                                    .exchange(),
-                    expectedInvalidFields
-            );
-        }
-
-        @Test
-        void invalid_email() {
-            email = "invalid";
-            removeUser("email");
+        @Override
+        Function<WebTestClient, WebTestClient.ResponseSpec> buildSender() {
+            return buildSender("/api/users/" + BY_EMAIL, "john.smith@company.com");
         }
     }
 
