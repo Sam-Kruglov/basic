@@ -75,7 +75,11 @@ public class AuthService {
         if (!passwordEncoder.matches(changePasswordDto.getOldPassword(), user.getEncodedPassword())) {
             throw new BaseException(OLD_PASSWORD_DOES_NOT_MATCH);
         }
-        user.setEncodedPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+        setPassword(user, changePasswordDto.getNewPassword());
+    }
+
+    public void setPassword(User user, String newPassword) {
+        user.setEncodedPassword(passwordEncoder.encode(newPassword));
         userRepo.save(user);
     }
 }

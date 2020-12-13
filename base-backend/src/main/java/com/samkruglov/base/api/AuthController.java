@@ -2,7 +2,9 @@ package com.samkruglov.base.api;
 
 import com.samkruglov.base.api.config.Current;
 import com.samkruglov.base.api.config.OpenApiConfig;
+import com.samkruglov.base.api.config.Referred;
 import com.samkruglov.base.api.view.request.ChangePasswordDto;
+import com.samkruglov.base.api.view.request.ChangeUserPasswordDto;
 import com.samkruglov.base.api.view.request.CredentialsDto;
 import com.samkruglov.base.api.view.response.JwtDto;
 import com.samkruglov.base.domain.User;
@@ -10,6 +12,7 @@ import com.samkruglov.base.service.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.samkruglov.base.api.config.UserUrlPathId.BY_EMAIL;
 import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
 
 @RestController
@@ -38,5 +42,14 @@ public class AuthController {
     @PutMapping("users/" + SELF + "/change-password")
     public void changeMyPassword(@Current User user, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
         service.changePassword(user, changePasswordDto);
+    }
+
+    @PutMapping("users/" + BY_EMAIL + "/change-password")
+    @PreAuthorize("not #user.hasRole(@roles.ADMIN)")
+    public void changeUserPassword(
+            @Referred User user,
+            @Valid @RequestBody ChangeUserPasswordDto changeUserPasswordDto
+    ) {
+        service.setPassword(user, changeUserPasswordDto.getNewPassword());
     }
 }

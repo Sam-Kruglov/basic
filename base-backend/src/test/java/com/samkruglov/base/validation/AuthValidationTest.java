@@ -2,6 +2,7 @@ package com.samkruglov.base.validation;
 
 import com.samkruglov.base.api.AuthController;
 import com.samkruglov.base.api.view.request.ChangePasswordDto;
+import com.samkruglov.base.api.view.request.ChangeUserPasswordDto;
 import com.samkruglov.base.api.view.request.CredentialsDto;
 import com.samkruglov.base.config.ValidationTest;
 import com.samkruglov.base.service.AuthService;
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
+import static com.samkruglov.base.api.config.UserUrlPathId.BY_EMAIL;
 import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
 
 @Import(AuthController.class)
@@ -76,7 +78,7 @@ public class AuthValidationTest extends ValidationTest {
         void changePassword(String... expectedInvalidFields) {
             sendAndAssertFields(
                     client -> client.put()
-                                    .uri("/api/auth/users/"+ SELF +"/change-password")
+                                    .uri("/api/auth/users/" + SELF + "/change-password")
                                     .bodyValue(new ChangePasswordDto(oldPassword, newPassword))
                                     .exchange(),
                     expectedInvalidFields
@@ -95,6 +97,35 @@ public class AuthValidationTest extends ValidationTest {
         void invalid_new_password(String invalidPassword) {
             newPassword = invalidPassword;
             changePassword("newPassword");
+        }
+    }
+
+    @Nested
+    class change_user_password {
+
+        String newPassword;
+
+        @BeforeEach
+        void setUp() {
+            newPassword = "password";
+        }
+
+        void changeUserPassword(String... expectedInvalidFields) {
+            sendAndAssertFields(
+                    client -> client.put()
+                                    .uri("/api/auth/users/" + BY_EMAIL + "/change-password",
+                                            "john.smith@company.com")
+                                    .bodyValue(new ChangeUserPasswordDto(newPassword))
+                                    .exchange(),
+                    expectedInvalidFields
+            );
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void invalid_new_password(String invalidPassword) {
+            newPassword = invalidPassword;
+            changeUserPassword("newPassword");
         }
     }
 }

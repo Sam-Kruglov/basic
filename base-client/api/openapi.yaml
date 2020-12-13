@@ -101,6 +101,56 @@ paths:
         - auth
       x-contentType: application/json
       x-accepts: application/json
+  /api/auth/users/{email}/change-password:
+    put:
+      operationId: changeUserPassword
+      parameters:
+        - explode: false
+          in: path
+          name: email
+          required: true
+          schema:
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeUserPasswordDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "401":
+          content: { }
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: { }
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
+      tags:
+        - auth
+      x-contentType: application/json
+      x-accepts: application/json
   /api/users:
     post:
       operationId: create-user
@@ -499,6 +549,15 @@ components:
           type: string
         lastName:
           type: string
+      type: object
+    ChangeUserPasswordDto:
+      example:
+        newPassword: newPassword
+      properties:
+        newPassword:
+          type: string
+      required:
+        - newPassword
       type: object
     ChangePasswordDto:
       example:
