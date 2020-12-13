@@ -5,7 +5,7 @@ info:
 
      Following [semantic versioning](https://semver.org/).
   title: Base App API
-  version: 1.0.1
+  version: 1.0.0-SNAPSHOT
 servers:
   - description: Generated server url
     url: http://localhost:8080
