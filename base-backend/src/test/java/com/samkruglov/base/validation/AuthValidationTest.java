@@ -47,7 +47,7 @@ public class AuthValidationTest extends ValidationTest {
          */
         @ParameterizedTest
         @NullAndEmptySource
-        @ValueSource(strings = {"john", "john.company", "john.company.com"})
+        @ValueSource(strings = { "s", "john", "john.company", "john.company.com" })
         void invalid_email(String invalidEmail) {
             email = invalidEmail;
             login("email");

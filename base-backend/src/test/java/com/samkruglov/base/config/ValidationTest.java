@@ -36,7 +36,9 @@ import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -56,9 +58,13 @@ import static org.mockito.BDDMockito.given;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Controller.class)
         }
 )
-@Import({ValidationTest.InsecureConfig.class, ReferredUserConfig.class})
+@Import({ ValidationTest.InsecureConfig.class, ReferredUserConfig.class })
 @ActiveProfiles("test")
 public class ValidationTest {
+
+    protected static String build_long_string(int size) {
+        return IntStream.range(0, size).mapToObj(i -> "a").collect(joining());
+    }
 
     protected           WebTestClient webTestClient;
     @MockBean protected UserRepo      userRepo;
@@ -94,7 +100,7 @@ public class ValidationTest {
                   .allSatisfy(message -> assertThat(message).isNotBlank());
             softly.assertThat(response.getInvalidRequestParameters())
                   .extracting(InvalidRequestParameter::getName)
-                  .containsExactlyInAnyOrder(expectedInvalidFields);
+                  .contains(expectedInvalidFields);
         });
     }
 

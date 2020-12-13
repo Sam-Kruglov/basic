@@ -17,6 +17,8 @@ import org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodA
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 import static com.samkruglov.base.api.config.UserUrlPathId.EMAIL_PATH_VARIABLE_NAME;
@@ -104,7 +106,7 @@ public class ReferredUserConfig implements WebMvcConfigurer {
 
         @Value
         private static class EmailHolder {
-            @Email String email;
+            @NotBlank @Email @Size(min = 2, max = 70) String email;
         }
     }
 }

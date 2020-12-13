@@ -521,6 +521,8 @@ components:
         email: email
       properties:
         email:
+          maxLength: 70
+          minLength: 2
           type: string
         firstName:
           type: string
@@ -540,6 +542,8 @@ components:
         email: email
       properties:
         email:
+          maxLength: 70
+          minLength: 2
           type: string
         password:
           type: string

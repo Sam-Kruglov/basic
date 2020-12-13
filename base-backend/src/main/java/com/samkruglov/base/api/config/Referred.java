@@ -17,7 +17,7 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
         name = "email",
         in = PATH,
         required = true,
-        schema = @Schema(implementation = String.class)
+        schema = @Schema(implementation = String.class, minLength = 2, maxLength = 70)
 )
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

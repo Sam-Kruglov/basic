@@ -6,7 +6,6 @@ import com.samkruglov.base.api.view.request.ChangeUserDto;
 import com.samkruglov.base.api.view.request.CreateUserDto;
 import com.samkruglov.base.config.ValidationTest;
 import com.samkruglov.base.service.UserService;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.function.Function;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.samkruglov.base.api.config.UserUrlPathId.BY_EMAIL;
@@ -28,6 +26,8 @@ import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
 
 @Import(UserController.class)
 public class UserValidationTest extends ValidationTest {
+
+    private static final String LONG_NAME = build_long_string(300);
 
     @MockBean UserService service;
     @MockBean UserMapper  mapper;
@@ -59,7 +59,7 @@ public class UserValidationTest extends ValidationTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        @ValueSource(strings = "invalid")
+        @ValueSource(strings = { "s", "invalid" })
         void invalid_email(String invalidEmail) {
             email = invalidEmail;
             createUser("email");
@@ -67,7 +67,7 @@ public class UserValidationTest extends ValidationTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
+        @MethodSource("com.samkruglov.base.validation.UserValidationTest#long_name_factory")
         void invalid_first_and_last_name(String invalidName) {
             firstName = invalidName;
             lastName = invalidName;
@@ -129,7 +129,7 @@ public class UserValidationTest extends ValidationTest {
 
         @ParameterizedTest
         @EmptySource
-        @MethodSource("com.samkruglov.base.validation.UserValidationTest#very_long_name_factory")
+        @MethodSource("com.samkruglov.base.validation.UserValidationTest#long_name_factory")
         void invalid_first_and_last_name(String invalidName) {
             firstName = invalidName;
             lastName = invalidName;
@@ -180,9 +180,7 @@ public class UserValidationTest extends ValidationTest {
         }
     }
 
-    static Stream<String> very_long_name_factory() {
-        val builder = new StringBuilder();
-        IntStream.range(0, 300).mapToObj(i -> "a").forEach(builder::append);
-        return Stream.of(builder.toString());
+    static Stream<String> long_name_factory() {
+        return Stream.of(LONG_NAME);
     }
 }

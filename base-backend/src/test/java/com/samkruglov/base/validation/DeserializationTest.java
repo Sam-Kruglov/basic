@@ -44,6 +44,8 @@ import static org.mockito.BDDMockito.willReturn;
 @Import(DeserializationTest.StubController.class)
 public class DeserializationTest extends ValidationTest {
 
+    private static final String LONG_EMAIL = "x.x@x.x".replace("x", build_long_string(25));
+
     @RestController
     @RequestMapping("/stub")
     static class StubController {
@@ -61,7 +63,7 @@ public class DeserializationTest extends ValidationTest {
         Stub2Dto      nested    = new Stub2Dto();
     }
 
-    private enum StubEnum {ONE}
+    private enum StubEnum { ONE }
 
     @Value
     private static class Stub2Dto {
@@ -138,9 +140,11 @@ public class DeserializationTest extends ValidationTest {
                          });
         }
 
-        @Test
-        void invalid_email() {
-            email = "invalid";
+        @ParameterizedTest
+        @ValueSource(strings = { "s", "invalid" })
+        @MethodSource("com.samkruglov.base.validation.DeserializationTest#longEmailFactory")
+        void invalid_email(String invalidEmail) {
+            email = invalidEmail;
             sendAndAssertFields("email");
         }
     }
@@ -155,5 +159,9 @@ public class DeserializationTest extends ValidationTest {
 
     static Stream<String> bodyFieldNames() {
         return FieldUtils.getAllFieldsList(StubDto.class).stream().map(Field::getName);
+    }
+
+    public static Stream<String> longEmailFactory() {
+        return Stream.of(LONG_EMAIL);
     }
 }
