@@ -24,6 +24,7 @@ public class AuthIntegrationTest extends IntegrationTest {
 
     @BeforeAll
     void setUp() {
+        clearDatabase();
         authApi = apiClient.buildClient(AuthApi.class);
     }
 
