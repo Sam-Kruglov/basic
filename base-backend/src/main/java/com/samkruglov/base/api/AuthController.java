@@ -33,8 +33,8 @@ public class AuthController {
         return new JwtDto(service.login(credentials).serialize());
     }
 
-    @PutMapping("/change-password")
-    public void changePassword(@Current User user, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
+    @PutMapping("/users/self/change-password")
+    public void changeMyPassword(@Current User user, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
         service.changePassword(user, changePasswordDto);
     }
 }

@@ -96,14 +96,13 @@ public class SecurityConfig {
                         // /open-api doesn't exist in production
                         .antMatchers("/open-api/**").permitAll()
                         .antMatchers("/api/auth/login").permitAll()
-                        .antMatchers("/api/auth/change-password").authenticated()
                         // there's no need for the already logged in users to create more users
                         // fixme attacker may infinitely create users. Rate limiting required
                         .antMatchers(HttpMethod.POST, "/api/users")
                             .access("not authenticated or hasRole(@roles.ADMIN)")
                         //admin users can only be removed manually directly from the database
                         .antMatchers(HttpMethod.DELETE, "/api/users/self").not().hasRole(ADMIN)
-                        .antMatchers("/api/**/self/**").hasRole(USER)
+                        .antMatchers("/api/**/self/**").authenticated()
                         .anyRequest().hasRole(ADMIN)
                         .and()
                     .oauth2ResourceServer()

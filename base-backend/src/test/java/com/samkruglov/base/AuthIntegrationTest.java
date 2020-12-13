@@ -67,7 +67,7 @@ public class AuthIntegrationTest extends IntegrationTest {
                 assertThatNoException().isThrownBy(() -> {
                     val oldPassword = UserTestFactory.PASSWORD;
                     newPassword = oldPassword + "1";
-                    authApi.changePassword(new ChangePasswordDto().oldPassword(oldPassword).newPassword(newPassword));
+                    authApi.changeMyPassword(new ChangePasswordDto().oldPassword(oldPassword).newPassword(newPassword));
                     apiClient.authenticate(email, newPassword);
                 });
             }

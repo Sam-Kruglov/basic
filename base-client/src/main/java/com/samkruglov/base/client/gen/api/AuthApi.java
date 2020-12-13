@@ -9,12 +9,12 @@ import feign.*;
 public interface AuthApi extends ApiClient.Api {
 
   /** @param changePasswordDto (required) */
-  @RequestLine("PUT /api/auth/change-password")
+  @RequestLine("PUT /api/auth/users/self/change-password")
   @Headers({
     "Content-Type: application/json",
     "Accept: application/json",
   })
-  void changePassword(ChangePasswordDto changePasswordDto);
+  void changeMyPassword(ChangePasswordDto changePasswordDto);
 
   /**
    * @param credentialsDto (required)

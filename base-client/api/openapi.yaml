@@ -12,48 +12,6 @@ servers:
 security:
   - jwt: [ ]
 paths:
-  /api/auth/change-password:
-    put:
-      operationId: changePassword
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChangePasswordDto'
-        required: true
-      responses:
-        "200":
-          description: OK
-        "401":
-          content: { }
-          description: Unauthorized
-          headers:
-            WWW-Authenticate:
-              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
-              explode: false
-              schema:
-                type: string
-              style: simple
-        "403":
-          content: { }
-          description: Forbidden
-          headers:
-            WWW-Authenticate:
-              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
-              explode: false
-              schema:
-                type: string
-              style: simple
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: other error responses
-      tags:
-        - auth
-      x-contentType: application/json
-      x-accepts: application/json
   /api/auth/login:
     post:
       operationId: login
@@ -97,6 +55,48 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: other error responses
       security: [ ]
+      tags:
+        - auth
+      x-contentType: application/json
+      x-accepts: application/json
+  /api/auth/users/self/change-password:
+    put:
+      operationId: changeMyPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "401":
+          content: { }
+          description: Unauthorized
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "403":
+          content: { }
+          description: Forbidden
+          headers:
+            WWW-Authenticate:
+              description: '[RFC 6750#3](https://tools.ietf.org/html/rfc6750#section-3)'
+              explode: false
+              schema:
+                type: string
+              style: simple
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: other error responses
       tags:
         - auth
       x-contentType: application/json

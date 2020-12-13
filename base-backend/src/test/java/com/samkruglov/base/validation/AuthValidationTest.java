@@ -74,7 +74,7 @@ public class AuthValidationTest extends ValidationTest {
         void changePassword(String... expectedInvalidFields) {
             sendAndAssertFields(
                     client -> client.put()
-                                    .uri("/api/auth/change-password")
+                                    .uri("/api/auth/users/self/change-password")
                                     .bodyValue(new ChangePasswordDto(oldPassword, newPassword))
                                     .exchange(),
                     expectedInvalidFields
