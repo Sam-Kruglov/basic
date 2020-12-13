@@ -85,7 +85,7 @@ public class DeserializationTest extends ValidationTest {
     private Function<WebTestClient, WebTestClient.ResponseSpec> buildSender() {
         return client -> client.post()
                                .uri(builder -> {
-                                   builder.path("/stub" + BY_EMAIL);
+                                   builder.path("/stub/" + BY_EMAIL);
                                    if (integerParam != null) builder.queryParam("integerParam", integerParam);
                                    return builder.build(email);
                                })

@@ -30,12 +30,12 @@ public class AuthController {
 
     @Tag(name = OpenApiConfig.INSECURE_TAG)
     @SneakyThrows
-    @PostMapping("/login")
+    @PostMapping("login")
     public JwtDto login(@Valid @RequestBody CredentialsDto credentials) {
         return new JwtDto(service.login(credentials).serialize());
     }
 
-    @PutMapping("/users/" + SELF + "/change-password")
+    @PutMapping("users/" + SELF + "/change-password")
     public void changeMyPassword(@Current User user, @Valid @RequestBody ChangePasswordDto changePasswordDto) {
         service.changePassword(user, changePasswordDto);
     }
