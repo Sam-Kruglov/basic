@@ -1,8 +1,8 @@
 package com.samkruglov.base.repo.impl;
 
-import com.samkruglov.base.repo.config.HibernateRepository;
 import com.samkruglov.base.domain.Role;
 import com.samkruglov.base.repo.RoleRepo;
+import com.samkruglov.base.repo.config.HibernateRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

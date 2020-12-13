@@ -36,12 +36,12 @@ import static com.samkruglov.base.service.error.BaseErrorType.OLD_PASSWORD_DOES_
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final JWSSigner jwsSigner;
-    private final UserRepo userRepo;
-    private final PasswordEncoder passwordEncoder;
+    private final JWSSigner             jwsSigner;
+    private final UserRepo              userRepo;
+    private final PasswordEncoder       passwordEncoder;
     @Value("${jwt.valid-for}")
-    private final Duration validFor;
-    private JWSAlgorithm jwsAlgorithm;
+    private final Duration              validFor;
+    private       JWSAlgorithm          jwsAlgorithm;
 
     @Autowired
     public void setJwsAlgorithm(OAuth2ResourceServerProperties properties) {

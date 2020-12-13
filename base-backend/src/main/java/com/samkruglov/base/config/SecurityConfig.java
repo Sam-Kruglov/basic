@@ -66,7 +66,7 @@ public class SecurityConfig {
     @RequiredArgsConstructor
     public static class ApiConfig extends WebSecurityConfigurerAdapter {
         private final UserDetailsService userDetailsService;
-        private final PasswordEncoder passwordEncoder;
+        private final PasswordEncoder    passwordEncoder;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {

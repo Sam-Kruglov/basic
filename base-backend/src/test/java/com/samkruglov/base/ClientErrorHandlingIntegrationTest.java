@@ -23,7 +23,7 @@ public class ClientErrorHandlingIntegrationTest extends IntegrationTest {
     @Nested
     class given_authenticated_admin {
 
-        String   email    = "john.smith@company.com";
+        String   email = "john.smith@company.com";
         UsersApi usersApi;
 
         @BeforeAll

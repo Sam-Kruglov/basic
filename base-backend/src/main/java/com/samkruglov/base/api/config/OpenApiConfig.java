@@ -216,7 +216,7 @@ public class OpenApiConfig {
             };
         }
 
-        @SuppressWarnings({"rawtypes", "unchecked"})
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         @Bean
         public OpenApiCustomiser propertySortingSchemaCustomizer() {
             return openApi -> openApi.getComponents().getSchemas().values().forEach(schema -> {

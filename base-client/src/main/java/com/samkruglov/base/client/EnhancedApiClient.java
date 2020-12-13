@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class EnhancedApiClient {
 
     private final ApiClient apiClient;
-    private AuthApi authApi;
+    private       AuthApi   authApi;
 
     public EnhancedApiClient(String basePath, Logger.Level logLevel) {
         apiClient = new ApiClient("jwt");

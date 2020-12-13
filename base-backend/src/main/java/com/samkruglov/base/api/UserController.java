@@ -34,7 +34,7 @@ public class UserController {
     public static final String CREATE_USER_OP_ID = "create-user";
 
     private final UserService service;
-    private final UserMapper mapper;
+    private final UserMapper  mapper;
 
     @Operation(operationId = CREATE_USER_OP_ID)
     @PostMapping

@@ -24,7 +24,10 @@ public class CacheConfig {
      * see {@link com.hazelcast.hibernate.instance.HazelcastInstanceLoader#loadInstance()}
      */
     @Bean
-    HazelcastInstance hazelcastInstance(HazelcastProperties properties, JpaProperties jpaProperties) throws IOException {
+    HazelcastInstance hazelcastInstance(
+            HazelcastProperties properties,
+            JpaProperties jpaProperties
+    ) throws IOException {
         Resource config = properties.resolveConfigLocation();
         HazelcastInstance instance;
         if (config != null) {

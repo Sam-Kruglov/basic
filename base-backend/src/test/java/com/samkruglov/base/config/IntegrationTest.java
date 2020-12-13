@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class IntegrationTest {
 
     protected EnhancedApiClient apiClient;
-    protected UserTestFactory userFactory;
+    protected UserTestFactory   userFactory;
 
     private EntityManager entityManager;
 

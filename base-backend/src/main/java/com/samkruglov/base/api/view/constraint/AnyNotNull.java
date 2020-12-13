@@ -13,7 +13,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Constraint(validatedBy = AnyNotNullValidator.class)
-@Target({TYPE, ANNOTATION_TYPE})
+@Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @Documented
 public @interface AnyNotNull {

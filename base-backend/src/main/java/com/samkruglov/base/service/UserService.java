@@ -25,9 +25,9 @@ import static com.samkruglov.base.service.error.BaseErrorType.EMAIL_ALREADY_EXIS
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepo repo;
+    private final UserRepo   repo;
     private final UserMapper mapper;
-    private final RoleRepo roleRepo;
+    private final RoleRepo   roleRepo;
 
     public void create(CreateUserDto dto) {
         if (repo.existsByEmail(dto.getEmail())) {
