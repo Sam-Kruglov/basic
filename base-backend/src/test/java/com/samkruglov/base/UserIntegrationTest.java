@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static com.samkruglov.base.client.gen.view.ErrorResponse.CodeEnum.USER_NOT_FOUND;
 import static com.samkruglov.base.config.TestUtil.Client.assertNoPermissionTo;
+import static com.samkruglov.base.config.TestUtil.Client.assertThatBaseException;
 import static com.samkruglov.base.config.TestUtil.Client.assertThatUnauthorized;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -179,6 +181,13 @@ class UserIntegrationTest extends IntegrationTest {
             @Test
             void can_remove_user_2() {
                 assertThatNoException().isThrownBy(() -> usersApi.removeUser(email2));
+            }
+
+            @Order(4)
+            @Test
+            void user_2_not_found() {
+                assertThatBaseException(USER_NOT_FOUND)
+                        .isThrownBy(() -> usersApi.getUser(email2));
             }
         }
 
