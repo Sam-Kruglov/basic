@@ -16,10 +16,6 @@ import java.util.Optional;
 @Repository("userRepo")
 public interface JpaUserRepo extends UserRepo, HibernateRepository<User, Long> {
 
-    @Cached
-    @Override
-    Optional<User> findById(Long id);
-
     @Override
     default Optional<User> findByEmail(String email) {
         return findByNaturalId(email);
