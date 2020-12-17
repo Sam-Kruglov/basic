@@ -137,7 +137,7 @@ public class UserValidationTest extends ValidationTest {
         }
 
         @Test
-        void missing_both_first_and_last_name() {
+        void missing_all() {
             firstName = null;
             lastName = null;
             sendAndAssertMessage(changeSender, "must not be null", "firstName", "lastName");
@@ -163,12 +163,6 @@ public class UserValidationTest extends ValidationTest {
         Function<WebTestClient, WebTestClient.ResponseSpec> buildSender() {
             return buildSender("/api/users/" + SELF);
         }
-
-        Function<WebTestClient, WebTestClient.ResponseSpec> changeMe =
-                client -> client.put()
-                                .uri("/api/users/" + SELF)
-                                .bodyValue(new ChangeUserDto(firstName, lastName))
-                                .exchange();
     }
 
     @Nested
