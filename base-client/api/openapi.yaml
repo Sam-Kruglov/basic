@@ -477,67 +477,18 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
       description: other error responses
   schemas:
-    ErrorResponse:
-      description: |+
-        * 400:
-
-          * 2 - Email already exists
-
-          * 3 - Old password does not match
-
-          * 4 - Invalid request format
-
-        * 404:
-
-          * 1 - User not found
-
-        * 500:
-
-          * 0 - Internal error
-
+    ChangePasswordDto:
+      example:
+        oldPassword: oldPassword
+        newPassword: newPassword
       properties:
-        code:
-          enum:
-            - 0
-            - 1
-            - 2
-            - 3
-            - 4
-          format: int32
-          type: integer
-          x-enum-varnames:
-            - INTERNAL_ERROR
-            - USER_NOT_FOUND
-            - EMAIL_ALREADY_EXISTS
-            - OLD_PASSWORD_DOES_NOT_MATCH
-            - INVALID_REQUEST
-          x-enum-descriptions:
-            - Internal error
-            - User not found
-            - Email already exists
-            - Old password does not match
-            - Invalid request format
-        invalidRequestParameters:
-          description: May be present when the code is 4
-          items:
-            $ref: '#/components/schemas/InvalidRequestParameter'
-          type: array
-        message:
+        newPassword:
+          type: string
+        oldPassword:
           type: string
       required:
-        - code
-        - message
-      type: object
-    InvalidRequestParameter:
-      description: May be present when the code is 4
-      properties:
-        message:
-          type: string
-        name:
-          type: string
-      required:
-        - message
-        - name
+        - newPassword
+        - oldPassword
       type: object
     ChangeUserDto:
       description: at least one field must be present
@@ -558,19 +509,6 @@ components:
           type: string
       required:
         - newPassword
-      type: object
-    ChangePasswordDto:
-      example:
-        oldPassword: oldPassword
-        newPassword: newPassword
-      properties:
-        newPassword:
-          type: string
-        oldPassword:
-          type: string
-      required:
-        - newPassword
-        - oldPassword
       type: object
     CreateUserDto:
       example:
@@ -610,14 +548,56 @@ components:
         - email
         - password
       type: object
-    JwtDto:
-      example:
-        jwt: jwt
+    ErrorResponse:
+      description: |+
+        * 400:
+
+          * 2 - Email already exists
+
+          * 3 - Old password does not match
+
+          * 4 - Invalid request format
+
+        * 404:
+
+          * 1 - User not found
+
+        * 500:
+
+          * 0 - Internal error
+
       properties:
-        jwt:
+        code:
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+          format: int32
+          type: integer
+          x-enum-descriptions:
+            - Internal error
+            - User not found
+            - Email already exists
+            - Old password does not match
+            - Invalid request format
+          x-enum-varnames:
+            - INTERNAL_ERROR
+            - USER_NOT_FOUND
+            - EMAIL_ALREADY_EXISTS
+            - OLD_PASSWORD_DOES_NOT_MATCH
+            - INVALID_REQUEST
+        invalidRequestParameters:
+          description: May be present when the code is 4
+          items:
+            $ref: '#/components/schemas/InvalidRequestParameter'
+          type: array
+        message:
           type: string
       required:
-        - jwt
+        - code
+        - message
       type: object
     GetUserDto:
       example:
@@ -635,6 +615,26 @@ components:
         - email
         - firstName
         - lastName
+      type: object
+    InvalidRequestParameter:
+      description: May be present when the code is 4
+      properties:
+        message:
+          type: string
+        name:
+          type: string
+      required:
+        - message
+        - name
+      type: object
+    JwtDto:
+      example:
+        jwt: jwt
+      properties:
+        jwt:
+          type: string
+      required:
+        - jwt
       type: object
   securitySchemes:
     jwt:

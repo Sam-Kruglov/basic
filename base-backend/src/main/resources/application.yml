@@ -20,6 +20,7 @@ spring:
 jwt.valid-for: 1m
 
 springdoc:
+  writer-with-order-by-keys: true
   api-docs:
     enabled: false
     path: /open-api/v3/api-docs
