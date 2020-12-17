@@ -1,6 +1,5 @@
 groupId=com.samkruglov
 artifactId=base-client
-version=0.1.0
 package=$groupId.base.client.gen
 
 # let it re-generate all the markdown files. By default it will not replace existing ones
@@ -18,7 +17,6 @@ openapi-generator generate \
   --output $artifactId \
   --group-id $groupId \
   --artifact-id $artifactId \
-  --artifact-version $version \
   --api-package $package.api \
   --model-package $package.view \
   --enable-post-process-file \

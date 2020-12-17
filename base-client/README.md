@@ -26,7 +26,7 @@ After the client library is installed/deployed, you can use it in your Maven pro
 <dependency>
     <groupId>com.samkruglov</groupId>
     <artifactId>base-client</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <scope>compile</scope>
 </dependency>
 
