@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.capitalize;
 
 @Service
@@ -41,7 +41,7 @@ public class UserTestFactory {
                 capitalize(matcher.group("lastName")),
                 email,
                 password,
-                roles.collect(toList())
+                roles.collect(toSet())
         );
     }
 

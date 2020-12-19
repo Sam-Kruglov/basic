@@ -61,7 +61,7 @@ public class AuthService {
                         .expirationTime(Date.from(Instant.now().plus(validFor)))
                         .claim(
                                 OAuth2IntrospectionClaimNames.SCOPE,
-                                user.getRoles()
+                                user.getReadOnlyRoles()
                                     .stream()
                                     .map(Role::getName)
                                     .collect(Collectors.toUnmodifiableList())

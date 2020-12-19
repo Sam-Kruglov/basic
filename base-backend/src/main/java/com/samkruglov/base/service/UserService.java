@@ -13,7 +13,7 @@ import lombok.val;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Set;
 
 import static com.samkruglov.base.service.error.BaseErrorType.EMAIL_ALREADY_EXISTS;
 
@@ -34,7 +34,7 @@ public class UserService {
             throw new BaseException(EMAIL_ALREADY_EXISTS);
         }
         val userRole = roleRepo.findByName(Roles.USER);
-        repo.save(mapper.toUser(dto, List.of(userRole)));
+        repo.save(mapper.toUser(dto, Set.of(userRole)));
     }
 
     public void delete(User user) {

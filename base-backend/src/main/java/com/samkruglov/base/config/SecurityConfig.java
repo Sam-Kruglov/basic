@@ -44,8 +44,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.security.interfaces.RSAPrivateKey;
 import java.time.Duration;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.samkruglov.base.api.config.UserUrlPathId.SELF;
 import static com.samkruglov.base.config.Roles.ADMIN;
@@ -175,7 +175,7 @@ public class SecurityConfig {
                             anyName,
                             email,
                             passwordEncoder.encode("adminpass"),
-                            List.of(roleRepo.findByName(USER), roleRepo.findByName(ADMIN))
+                            Set.of(roleRepo.findByName(USER), roleRepo.findByName(ADMIN))
                     ));
                 }
             };
@@ -216,7 +216,7 @@ public class SecurityConfig {
         }
 
         private static Collection<SimpleGrantedAuthority> getAuthorities(User user) {
-            return user.getRoles()
+            return user.getReadOnlyRoles()
                        .stream()
                        .map(Role::getName)
                        // in Spring Security terminology, role is "ADMIN" and authority is "ROLE_ADMIN"

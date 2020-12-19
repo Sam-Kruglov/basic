@@ -12,7 +12,7 @@ import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+import java.util.Set;
 
 @Mapper(config = CreatorMapperConfig.class)
 public abstract class UserMapper {
@@ -30,7 +30,7 @@ public abstract class UserMapper {
     }
 
     //todo check up on https://github.com/mapstruct/mapstruct/issues/2285
-    public User toUser(CreateUserDto userDto, List<Role> roles) {
+    public User toUser(CreateUserDto userDto, Set<Role> roles) {
         return new User(
                 userDto.getFirstName(),
                 userDto.getLastName(),

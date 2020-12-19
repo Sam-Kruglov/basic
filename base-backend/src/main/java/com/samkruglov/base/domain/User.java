@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
@@ -21,8 +22,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 @Entity
@@ -68,10 +70,23 @@ public class User extends Identifiable {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    @Getter(AccessLevel.NONE)
+    private Set<Role> roles;
 
     public boolean hasRole(String roleName) {
-        return getRoles().stream().map(Role::getName).anyMatch(Predicate.isEqual(roleName));
+        return getReadOnlyRoles().stream().map(Role::getName).anyMatch(Predicate.isEqual(roleName));
+    }
+
+    public Set<Role> getReadOnlyRoles() {
+        return Collections.unmodifiableSet(roles);
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public void removeRoles(String... roleNames) {
+        roles.removeIf(role -> StringUtils.equalsAny(role.getName(), roleNames));
     }
 
     public String getFullName() {
