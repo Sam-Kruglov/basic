@@ -7,10 +7,11 @@ import lombok.Value;
 import lombok.val;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.web.bind.annotation.ValueConstants;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver;
 
@@ -51,15 +52,16 @@ public class ReferredUserConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new UserViaEmailPathVariableMethodArgumentResolver());
+        resolvers.add(new UserViaEmailPathVariableMethodArgumentResolver(userRepo, new EmailValidator(validator)));
     }
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new ValidEmailToUserConverter(userRepo, new EmailValidator(validator)));
-    }
+    @RequiredArgsConstructor
+    private static class UserViaEmailPathVariableMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static class UserViaEmailPathVariableMethodArgumentResolver extends PathVariableMethodArgumentResolver {
+        private final EmailPathVariableMethodArgumentResolverDelegate delegate =
+                new EmailPathVariableMethodArgumentResolverDelegate();
+        private final UserRepo                                        userRepo;
+        private final EmailValidator                                  emailValidator;
 
         @Override
         public boolean supportsParameter(MethodParameter parameter) {
@@ -68,24 +70,30 @@ public class ReferredUserConfig implements WebMvcConfigurer {
         }
 
         @Override
-        protected NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
-            return new NamedValueInfo(EMAIL_PATH_VARIABLE_NAME, true, ValueConstants.DEFAULT_NONE);
+        public Object resolveArgument(
+                MethodParameter parameter,
+                ModelAndViewContainer mavContainer,
+                NativeWebRequest webRequest,
+                WebDataBinderFactory binderFactory
+        ) throws Exception {
+            // binder should be null to ignore the fact that the parameter is of type User,
+            // otherwise it will try to convert and fail.
+            val email = (String) delegate.resolveArgument(parameter, mavContainer, webRequest, null);
+            emailValidator.validate(email);
+            val referredAnnotation = parameter.getParameterAnnotation(Referred.class);
+            //noinspection ConstantConditions annotation can't be null, checked in #supportsParameter
+            if (referredAnnotation.lazy()) {
+                return userRepo.getReferenceByEmail(email);
+            }
+            return userRepo.getByEmail(email);
         }
     }
 
-    /**
-     * @implNote type conversion happens before validation
-     * but we should validate the email before going to the database.
-     */
-    @RequiredArgsConstructor
-    private static class ValidEmailToUserConverter implements Converter<String, User> {
-        private final UserRepo       userRepo;
-        private final EmailValidator emailValidator;
+    private static class EmailPathVariableMethodArgumentResolverDelegate extends PathVariableMethodArgumentResolver {
 
         @Override
-        public User convert(String email) {
-            emailValidator.validate(email);
-            return userRepo.getByEmail(email);
+        protected NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
+            return new NamedValueInfo(EMAIL_PATH_VARIABLE_NAME, true, ValueConstants.DEFAULT_NONE);
         }
     }
 

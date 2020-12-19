@@ -18,5 +18,22 @@ public interface HibernateRepository<T, ID extends Serializable> extends Reposit
 
     <N extends Serializable> Optional<T> findByNaturalId(N naturalId);
 
-    Optional<T> findByNaturalId(Map<String, Object> naturalIds);
+    Optional<T> findByNaturalIds(Map<String, Object> naturalIds);
+
+    /**
+     * Only queries the database for the id and constructs a lazy proxy.
+     */
+    <N extends Serializable> Optional<T> findReferenceByNaturalId(N naturalId);
+
+    /**
+     * Only queries the database for the id and constructs a lazy proxy.
+     */
+    Optional<T> findReferenceByNaturalIds(Map<String, Object> naturalIds);
+
+    /**
+     * Does not query the database and constructs a lazy proxy.
+     * If such entity isn't found, throws {@link javax.persistence.EntityNotFoundException}
+     * see {@link javax.persistence.EntityManager#getReference}
+     */
+    T getReferenceById(ID id);
 }

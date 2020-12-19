@@ -22,6 +22,11 @@ public interface JpaUserRepo extends UserRepo, HibernateRepository<User, Long> {
     }
 
     @Override
+    default Optional<User> findReferenceByEmail(String email) {
+        return findReferenceByNaturalId(email);
+    }
+
+    @Override
     boolean existsByEmail(String email);
 
     @QueryHints({

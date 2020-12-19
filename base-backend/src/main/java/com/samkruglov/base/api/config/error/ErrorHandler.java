@@ -7,7 +7,6 @@ import com.samkruglov.base.service.error.BaseErrorType;
 import com.samkruglov.base.service.error.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -103,14 +102,6 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(
             TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request
     ) {
-        val rootCause = ExceptionUtils.getRootCause(ex);
-        // there may be exceptions thrown in our own custom type converters
-        if (rootCause instanceof ConstraintViolationException) {
-            return validation(((ConstraintViolationException) rootCause));
-        }
-        if (rootCause instanceof BaseException) {
-            return expected(((BaseException) rootCause));
-        }
         String propertyName;
         if (ex.getPropertyName() != null) {
             //some subtypes of this exception don't populate this field

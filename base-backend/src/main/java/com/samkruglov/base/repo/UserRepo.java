@@ -12,7 +12,13 @@ public interface UserRepo {
     Optional<User> findByEmail(String email);
 
     default User getByEmail(String email) {
-        return findByEmail(email).orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+        return unwrap(findByEmail(email));
+    }
+
+    Optional<User> findReferenceByEmail(String email);
+
+    default User getReferenceByEmail(String email) {
+        return unwrap(findReferenceByEmail(email));
     }
 
     boolean existsByEmail(String email);
@@ -20,4 +26,9 @@ public interface UserRepo {
     void save(User user);
 
     void delete(User user);
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    static User unwrap(Optional<User> userOpt) {
+        return userOpt.orElseThrow(() -> new BaseException(USER_NOT_FOUND));
+    }
 }
