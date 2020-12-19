@@ -10,13 +10,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static com.samkruglov.base.api.config.UserUrlPathId.EMAIL_PATH_VARIABLE_NAME;
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 
 /**
  * see {@link ReferredUserConfig}
  */
 @Parameter(
-        name = "email",
+        name = EMAIL_PATH_VARIABLE_NAME,
         in = PATH,
         required = true,
         schema = @Schema(implementation = String.class, minLength = 2, maxLength = 70)
