@@ -10,15 +10,11 @@ import com.samkruglov.base.domain.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
 @Mapper(config = CreatorMapperConfig.class)
 public abstract class UserMapper {
-
-    @Autowired
-    protected PasswordEncoder passwordEncoder;
 
     @Autowired
     protected Updater updater;
@@ -30,12 +26,12 @@ public abstract class UserMapper {
     }
 
     //todo check up on https://github.com/mapstruct/mapstruct/issues/2285
-    public User toUser(CreateUserDto userDto, Set<Role> roles) {
+    public User toUser(CreateUserDto userDto, String password, Set<Role> roles) {
         return new User(
                 userDto.getFirstName(),
                 userDto.getLastName(),
                 userDto.getEmail(),
-                passwordEncoder.encode(userDto.getPassword()),
+                password,
                 roles
         );
     }

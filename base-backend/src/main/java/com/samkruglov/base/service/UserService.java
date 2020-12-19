@@ -10,6 +10,7 @@ import com.samkruglov.base.repo.UserRepo;
 import com.samkruglov.base.service.error.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +26,17 @@ import static com.samkruglov.base.service.error.BaseErrorType.EMAIL_ALREADY_EXIS
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepo   repo;
-    private final UserMapper mapper;
-    private final RoleRepo   roleRepo;
+    private final UserRepo        repo;
+    private final UserMapper      mapper;
+    private final RoleRepo        roleRepo;
+    private final PasswordEncoder passwordEncoder;
 
     public void create(CreateUserDto dto) {
         if (repo.existsByEmail(dto.getEmail())) {
             throw new BaseException(EMAIL_ALREADY_EXISTS);
         }
         val userRole = roleRepo.findByName(Roles.USER);
-        repo.save(mapper.toUser(dto, Set.of(userRole)));
+        repo.save(mapper.toUser(dto, passwordEncoder.encode(dto.getPassword()), Set.of(userRole)));
     }
 
     public void delete(User user) {
