@@ -4,6 +4,7 @@ import com.samkruglov.base.api.UserController;
 import com.samkruglov.base.api.config.error.ErrorResponse;
 import com.samkruglov.base.service.error.BaseErrorType;
 import io.swagger.v3.core.converter.ModelConverters;
+import io.swagger.v3.core.jackson.ModelResolver;
 import io.swagger.v3.core.util.RefUtils;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -48,6 +49,10 @@ public class OpenApiConfig {
     public static final String INSECURE_TAG = "insecure";
 
     private static final String JWT_SECURITY_SCHEME = "jwt";
+
+    static {
+        ModelResolver.enumsAsRef = true;
+    }
 
     private final List<CommonResponse> commonResponses = new LinkedList<>();
 
