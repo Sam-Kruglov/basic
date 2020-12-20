@@ -21,15 +21,15 @@ import java.util.Objects;
 
 /** at least one field must be present */
 @ApiModel(description = "at least one field must be present")
-@JsonPropertyOrder({ChangeUserDto.JSON_PROPERTY_FIRST_NAME, ChangeUserDto.JSON_PROPERTY_LAST_NAME})
-public class ChangeUserDto {
+@JsonPropertyOrder({UpdateUserDto.JSON_PROPERTY_FIRST_NAME, UpdateUserDto.JSON_PROPERTY_LAST_NAME})
+public class UpdateUserDto {
   public static final String JSON_PROPERTY_FIRST_NAME = "firstName";
   private String firstName;
 
   public static final String JSON_PROPERTY_LAST_NAME = "lastName";
   private String lastName;
 
-  public ChangeUserDto firstName(String firstName) {
+  public UpdateUserDto firstName(String firstName) {
 
     this.firstName = firstName;
     return this;
@@ -52,7 +52,7 @@ public class ChangeUserDto {
     this.firstName = firstName;
   }
 
-  public ChangeUserDto lastName(String lastName) {
+  public UpdateUserDto lastName(String lastName) {
 
     this.lastName = lastName;
     return this;
@@ -83,9 +83,9 @@ public class ChangeUserDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ChangeUserDto changeUserDto = (ChangeUserDto) o;
-    return Objects.equals(this.firstName, changeUserDto.firstName)
-        && Objects.equals(this.lastName, changeUserDto.lastName);
+    UpdateUserDto updateUserDto = (UpdateUserDto) o;
+    return Objects.equals(this.firstName, updateUserDto.firstName)
+        && Objects.equals(this.lastName, updateUserDto.lastName);
   }
 
   @Override
@@ -96,7 +96,7 @@ public class ChangeUserDto {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ChangeUserDto {\n");
+    sb.append("class UpdateUserDto {\n");
     sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
     sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
     sb.append("}");

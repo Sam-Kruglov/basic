@@ -3,8 +3,8 @@ package com.samkruglov.base.api;
 import com.samkruglov.base.api.config.Current;
 import com.samkruglov.base.api.config.Referred;
 import com.samkruglov.base.api.view.mapper.UserMapper;
-import com.samkruglov.base.api.view.request.ChangeUserDto;
 import com.samkruglov.base.api.view.request.CreateUserDto;
+import com.samkruglov.base.api.view.request.UpdateUserDto;
 import com.samkruglov.base.api.view.response.GetUserDto;
 import com.samkruglov.base.domain.User;
 import com.samkruglov.base.service.UserService;
@@ -53,14 +53,14 @@ public class UserController {
     }
 
     @PutMapping(SELF)
-    public void changeMe(@Current User user, @Valid @RequestBody ChangeUserDto changeDto) {
-        service.change(user, changeDto);
+    public void updateMe(@Current User user, @Valid @RequestBody UpdateUserDto updateDto) {
+        service.update(user, updateDto);
     }
 
     @PutMapping(BY_EMAIL)
     @PreAuthorize("not #user.hasRole(@roles.ADMIN)")
-    public void changeUser(@Referred User user, @Valid @RequestBody ChangeUserDto changeDto) {
-        service.change(user, changeDto);
+    public void updateUser(@Referred User user, @Valid @RequestBody UpdateUserDto updateDto) {
+        service.update(user, updateDto);
     }
 
     @DeleteMapping(BY_EMAIL)

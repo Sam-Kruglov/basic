@@ -1,8 +1,8 @@
 package com.samkruglov.base;
 
 import com.samkruglov.base.client.gen.api.UsersApi;
-import com.samkruglov.base.client.gen.view.ChangeUserDto;
 import com.samkruglov.base.client.gen.view.CreateUserDto;
+import com.samkruglov.base.client.gen.view.UpdateUserDto;
 import com.samkruglov.base.config.IntegrationTest;
 import com.samkruglov.base.config.UserTestFactory;
 import lombok.val;
@@ -97,7 +97,7 @@ class UserIntegrationTest extends IntegrationTest {
         @Test
         void can_edit_self(SoftAssertions softly) {
             val newName = "steve";
-            softly.assertThatCode(() -> usersApi.changeMe(new ChangeUserDto().firstName(newName)))
+            softly.assertThatCode(() -> usersApi.updateMe(new UpdateUserDto().firstName(newName)))
                   .doesNotThrowAnyException();
             softly.assertThat(usersApi.getMe().getFirstName()).isEqualTo(newName);
         }
@@ -118,7 +118,7 @@ class UserIntegrationTest extends IntegrationTest {
 
             @Test
             void cannot_edit_user_2() {
-                assertNoPermissionTo(() -> usersApi.changeUser(email2, new ChangeUserDto().firstName("steve")));
+                assertNoPermissionTo(() -> usersApi.updateUser(email2, new UpdateUserDto().firstName("steve")));
             }
 
             @Test
@@ -174,7 +174,7 @@ class UserIntegrationTest extends IntegrationTest {
             @Test
             void can_edit_user_2() {
                 assertThatNoException()
-                        .isThrownBy(() -> usersApi.changeUser(email2, new ChangeUserDto().firstName("steve")));
+                        .isThrownBy(() -> usersApi.updateUser(email2, new UpdateUserDto().firstName("steve")));
             }
 
             @Order(3)
@@ -210,7 +210,7 @@ class UserIntegrationTest extends IntegrationTest {
             @Order(2)
             @Test
             void cannot_edit_admin_2() {
-                assertNoPermissionTo(() -> usersApi.changeUser(email2, new ChangeUserDto().firstName("steve")));
+                assertNoPermissionTo(() -> usersApi.updateUser(email2, new UpdateUserDto().firstName("steve")));
             }
 
             @Order(3)

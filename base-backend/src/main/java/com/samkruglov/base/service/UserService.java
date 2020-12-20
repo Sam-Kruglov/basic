@@ -1,8 +1,8 @@
 package com.samkruglov.base.service;
 
 import com.samkruglov.base.api.view.mapper.UserMapper;
-import com.samkruglov.base.api.view.request.ChangeUserDto;
 import com.samkruglov.base.api.view.request.CreateUserDto;
+import com.samkruglov.base.api.view.request.UpdateUserDto;
 import com.samkruglov.base.config.Roles;
 import com.samkruglov.base.domain.User;
 import com.samkruglov.base.repo.RoleRepo;
@@ -43,8 +43,8 @@ public class UserService {
         repo.delete(user);
     }
 
-    public void change(User user, ChangeUserDto changeDto) {
-        mapper.updateUser(user, changeDto);
+    public void update(User user, UpdateUserDto updateDto) {
+        mapper.updateUser(user, updateDto);
         repo.save(user);
     }
 }

@@ -1,31 +1,12 @@
 package com.samkruglov.base.client.gen.api;
 
 import com.samkruglov.base.client.gen.ApiClient;
-import com.samkruglov.base.client.gen.view.ChangeUserDto;
 import com.samkruglov.base.client.gen.view.CreateUserDto;
 import com.samkruglov.base.client.gen.view.GetUserDto;
+import com.samkruglov.base.client.gen.view.UpdateUserDto;
 import feign.*;
 
 public interface UsersApi extends ApiClient.Api {
-
-  /** @param changeUserDto (required) */
-  @RequestLine("PUT /api/users/self")
-  @Headers({
-    "Content-Type: application/json",
-    "Accept: application/json",
-  })
-  void changeMe(ChangeUserDto changeUserDto);
-
-  /**
-   * @param email (required)
-   * @param changeUserDto (required)
-   */
-  @RequestLine("PUT /api/users/{email}")
-  @Headers({
-    "Content-Type: application/json",
-    "Accept: application/json",
-  })
-  void changeUser(@Param("email") String email, ChangeUserDto changeUserDto);
 
   /** @param createUserDto (required) */
   @RequestLine("POST /api/users")
@@ -65,4 +46,23 @@ public interface UsersApi extends ApiClient.Api {
     "Accept: application/json",
   })
   void removeUser(@Param("email") String email);
+
+  /** @param updateUserDto (required) */
+  @RequestLine("PUT /api/users/self")
+  @Headers({
+    "Content-Type: application/json",
+    "Accept: application/json",
+  })
+  void updateMe(UpdateUserDto updateUserDto);
+
+  /**
+   * @param email (required)
+   * @param updateUserDto (required)
+   */
+  @RequestLine("PUT /api/users/{email}")
+  @Headers({
+    "Content-Type: application/json",
+    "Accept: application/json",
+  })
+  void updateUser(@Param("email") String email, UpdateUserDto updateUserDto);
 }

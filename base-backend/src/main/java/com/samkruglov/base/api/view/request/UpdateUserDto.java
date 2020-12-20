@@ -8,7 +8,7 @@ import lombok.Value;
 @Value
 @AnyNotNull
 @Schema(description = "at least one field must be present")
-public class ChangeUserDto {
+public class UpdateUserDto {
     @UserFirstOrSecondName String firstName;
     @UserFirstOrSecondName String lastName;
 }

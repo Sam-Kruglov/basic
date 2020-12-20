@@ -2,8 +2,8 @@ package com.samkruglov.base.validation;
 
 import com.samkruglov.base.api.UserController;
 import com.samkruglov.base.api.view.mapper.UserMapper;
-import com.samkruglov.base.api.view.request.ChangeUserDto;
 import com.samkruglov.base.api.view.request.CreateUserDto;
+import com.samkruglov.base.api.view.request.UpdateUserDto;
 import com.samkruglov.base.config.ValidationTest;
 import com.samkruglov.base.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,18 +106,18 @@ public class UserValidationTest extends ValidationTest {
         }
     }
 
-    abstract class abstract_change {
+    abstract class abstract_update {
         protected String firstName;
         protected String lastName;
 
-        protected Function<WebTestClient, WebTestClient.ResponseSpec> changeSender = buildSender();
+        protected Function<WebTestClient, WebTestClient.ResponseSpec> updateSender = buildSender();
 
         abstract Function<WebTestClient, WebTestClient.ResponseSpec> buildSender();
 
         protected Function<WebTestClient, WebTestClient.ResponseSpec> buildSender(String uri, Object... params) {
             return client -> client.put()
                                    .uri(uri, params)
-                                   .bodyValue(new ChangeUserDto(firstName, lastName))
+                                   .bodyValue(new UpdateUserDto(firstName, lastName))
                                    .exchange();
         }
 
@@ -133,31 +133,31 @@ public class UserValidationTest extends ValidationTest {
         void invalid_first_and_last_name(String invalidName) {
             firstName = invalidName;
             lastName = invalidName;
-            sendAndAssertFields(changeSender, "firstName", "lastName");
+            sendAndAssertFields(updateSender, "firstName", "lastName");
         }
 
         @Test
         void missing_all() {
             firstName = null;
             lastName = null;
-            sendAndAssertMessage(changeSender, "must not be null", "firstName", "lastName");
+            sendAndAssertMessage(updateSender, "must not be null", "firstName", "lastName");
         }
 
         @Test
         void allowed_missing_first_name() {
             firstName = null;
-            sendAndAssertValid(changeSender);
+            sendAndAssertValid(updateSender);
         }
 
         @Test
         void allowed_missing_last_name() {
             lastName = null;
-            sendAndAssertValid(changeSender);
+            sendAndAssertValid(updateSender);
         }
     }
 
     @Nested
-    class change_me extends abstract_change {
+    class update_me extends abstract_update {
 
         @Override
         Function<WebTestClient, WebTestClient.ResponseSpec> buildSender() {
@@ -166,7 +166,7 @@ public class UserValidationTest extends ValidationTest {
     }
 
     @Nested
-    class change_user extends abstract_change {
+    class update_user extends abstract_update {
 
         @Override
         Function<WebTestClient, WebTestClient.ResponseSpec> buildSender() {

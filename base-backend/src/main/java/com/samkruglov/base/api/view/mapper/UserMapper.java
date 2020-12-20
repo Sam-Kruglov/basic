@@ -2,8 +2,8 @@ package com.samkruglov.base.api.view.mapper;
 
 import com.samkruglov.base.api.view.mapper.config.CreatorMapperConfig;
 import com.samkruglov.base.api.view.mapper.config.UpdaterMapperConfig;
-import com.samkruglov.base.api.view.request.ChangeUserDto;
 import com.samkruglov.base.api.view.request.CreateUserDto;
+import com.samkruglov.base.api.view.request.UpdateUserDto;
 import com.samkruglov.base.api.view.response.GetUserDto;
 import com.samkruglov.base.domain.Role;
 import com.samkruglov.base.domain.User;
@@ -21,8 +21,8 @@ public abstract class UserMapper {
 
     public abstract GetUserDto toGetUserDto(User user);
 
-    public void updateUser(User user, ChangeUserDto changeDto) {
-        updater.updateUser(user, changeDto);
+    public void updateUser(User user, UpdateUserDto updateDto) {
+        updater.updateUser(user, updateDto);
     }
 
     //todo check up on https://github.com/mapstruct/mapstruct/issues/2285
@@ -39,6 +39,6 @@ public abstract class UserMapper {
     @Mapper(config = UpdaterMapperConfig.class)
     interface Updater {
 
-        void updateUser(@MappingTarget User user, ChangeUserDto changeDto);
+        void updateUser(@MappingTarget User user, UpdateUserDto updateDto);
     }
 }

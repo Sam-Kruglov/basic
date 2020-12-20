@@ -270,12 +270,12 @@ paths:
         - users
       x-accepts: application/json
     put:
-      operationId: changeMe
+      operationId: updateMe
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChangeUserDto'
+              $ref: '#/components/schemas/UpdateUserDto'
         required: true
       responses:
         "200":
@@ -400,7 +400,7 @@ paths:
         - users
       x-accepts: application/json
     put:
-      operationId: changeUser
+      operationId: updateUser
       parameters:
         - explode: false
           in: path
@@ -413,7 +413,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChangeUserDto'
+              $ref: '#/components/schemas/UpdateUserDto'
         required: true
       responses:
         "200":
@@ -489,17 +489,6 @@ components:
       required:
         - newPassword
         - oldPassword
-      type: object
-    ChangeUserDto:
-      description: at least one field must be present
-      example:
-        firstName: firstName
-        lastName: lastName
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
       type: object
     ChangeUserPasswordDto:
       example:
@@ -635,6 +624,17 @@ components:
           type: string
       required:
         - jwt
+      type: object
+    UpdateUserDto:
+      description: at least one field must be present
+      example:
+        firstName: firstName
+        lastName: lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
       type: object
   securitySchemes:
     jwt:
