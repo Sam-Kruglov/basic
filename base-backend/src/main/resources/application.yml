@@ -29,3 +29,5 @@ springdoc:
   paths-to-match: /api/**
   # ErrorResponse gets removed with this enabled
   remove-broken-reference-definitions: false
+  default-produces-media-type: 'application/json'
+  default-consumes-media-type: 'application/json'
