@@ -1,6 +1,7 @@
 package com.samkruglov.base.validation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.samkruglov.base.api.config.Referred;
@@ -31,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +54,7 @@ public class DeserializationTest extends ValidationTest {
     static class StubController {
 
         @PostMapping(BY_EMAIL)
-        void doStuff(@Referred User user, @RequestParam Integer integerParam, @RequestBody StubDto dto) {
+        void doStuff(@Referred User user, @RequestParam Integer integerParam, @Valid @RequestBody StubDto dto) {
         }
     }
 
@@ -60,14 +63,14 @@ public class DeserializationTest extends ValidationTest {
         Integer       integer   = 1;
         List<Integer> list      = List.of(1);
         StubEnum      enumValue = StubEnum.ONE;
-        Stub2Dto      nested    = new Stub2Dto();
+        @Valid Stub2Dto nested = new Stub2Dto();
     }
 
     private enum StubEnum { ONE }
 
     @Value
     private static class Stub2Dto {
-        Integer integer = 1;
+        @Positive Integer integer = 1;
     }
 
     ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
@@ -116,6 +119,12 @@ public class DeserializationTest extends ValidationTest {
         @Test
         void invalid_nested_body_field_type() {
             ((ObjectNode) defaultDto.get("nested")).set("integer", TextNode.valueOf("someString"));
+            sendAndAssertFields("nested.integer");
+        }
+
+        @Test
+        void invalid_nested_body_field() {
+            ((ObjectNode) defaultDto.get("nested")).set("integer", IntNode.valueOf(-1));
             sendAndAssertFields("nested.integer");
         }
     }
